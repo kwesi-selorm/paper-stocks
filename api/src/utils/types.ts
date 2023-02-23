@@ -1,3 +1,7 @@
+export type GetStockPriceInput = {
+  symbol: string
+}
+
 export type NasdaqListedStock = {
   companyName: string
   financialStatus: string
