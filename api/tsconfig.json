@@ -1,16 +1,14 @@
 {
-	"compilerOptions": {
-      "outDir": "./built",
-      "allowJs": true,
-      "target": "ES6",
-      "module": "commonjs",
-      "strict": true,
-      "moduleResolution": "Node",
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true,
-	},
-	"include": [
-		"src/**/*.ts"
-	],
-    "exclude": ["node_modules", ".idea", "built"],
+  "compilerOptions": {
+    "outDir": "./built",
+    "allowJs": true,
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", ".idea", "built"]
 }
