@@ -1,8 +1,8 @@
-import express from "express";
+import express = require("express");
 const router = express.Router();
 
 router.get("/", function (req, res, next) {
-  return "Homepage";
+  res.send("Hello World!");
 });
 
 export default router;

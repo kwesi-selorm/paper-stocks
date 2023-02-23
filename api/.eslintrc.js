@@ -1,14 +1,14 @@
-{
+module.exports = {   "globals": {module: true},
     "env": {
-      "node": true,
-        "browser": true,
-        "es2021": true
+      "browser": true,
+      "es2021": true,
+      "jest": true,
+        "node":true
     },
     "extends":["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "overrides": [
     ],
     "parser": "@typescript-eslint/parser",
-//    "parserOptions": { "project": ["./tsconfig.json"] },
     "plugins": [
     "@typescript-eslint"
     ],

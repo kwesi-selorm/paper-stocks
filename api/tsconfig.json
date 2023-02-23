@@ -1,16 +1,16 @@
 {
 	"compilerOptions": {
-		"outDir": "./built",
-		"allowJs": true,
-		"target": "ES6",
+      "outDir": "./built",
+      "allowJs": true,
+      "target": "ES6",
       "module": "commonjs",
-        "strict": true,
+      "strict": true,
       "moduleResolution": "Node",
       "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true
+      "esModuleInterop": true,
 	},
 	"include": [
-		"./src/**/*"
+		"src/**/*.ts"
 	],
-  "exclude": ["node_modules", ".idea"],
+    "exclude": ["node_modules", ".idea", "built"],
 }
