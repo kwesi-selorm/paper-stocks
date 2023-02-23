@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import axios, { AxiosError } from 'axios'
 import { StockPrice } from '../utils/types'
 import { createGetStockPriceRequestConfig } from '../configs/stocks-api'
+import nasdaqStocks from '../../assets/nasdaq-listed-stocks'
 
 const api = axios.create()
 
@@ -27,3 +28,9 @@ export async function getStockPrice(
     throw new Error('The request to fetch stock prices failed')
   }
 }
+
+export async function getNasdaqListedStocks(req: Request, res: Response) {
+  return res.status(200).json(nasdaqStocks)
+}
+
+//getStockList(), getUser(username, password), getUserStocks(id)
