@@ -10,15 +10,15 @@ export async function getStockPrice(
   req: Request,
   res: Response
 ): Promise<Response<StockPrice>> {
-  const { ticker } = req.params
-  if (ticker === null || ticker === undefined) {
+  const { symbol } = req.params
+  if (symbol === null || symbol === undefined) {
     return res.status(400).json({
-      message: 'Missing or invalid ticker argument'
+      message: 'Missing or invalid symbol argument'
     })
   }
 
   try {
-    const response = await api.request(createGetStockPriceRequestConfig(ticker))
+    const response = await api.request(createGetStockPriceRequestConfig(symbol))
     const data = await response.data
     return res.status(200).json(data)
   } catch (error) {
