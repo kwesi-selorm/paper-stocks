@@ -5,7 +5,9 @@ const userSchema = new Schema({
   name: String,
   email: String,
   passwordHash: String,
-  assets: [{ type: Schema.Types.ObjectId, ref: 'Stock' }]
+  passwordSalt: String,
+  assets: [{ type: Schema.Types.ObjectId, ref: 'Stock' }],
+  remainingCash: Number
 })
 
 export default model('User', userSchema, 'users')
