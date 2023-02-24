@@ -1,11 +1,12 @@
 import { Schema, model } from 'mongoose'
+import { AssetRecord } from '../utils/types'
 
-const assetSchema = new Schema({
+const assetSchema = new Schema<AssetRecord>({
   id: Schema.Types.ObjectId,
-  position: Number,
-  returnNumber: Number,
-  returnPercent: Number,
-  lastPrice: Number,
+  position: { type: Number, required: true },
+  returnNumber: { type: Number, required: true },
+  returnPercent: { type: Number, required: true },
+  lastPrice: { type: Number, required: true },
   users: [{ type: Schema.Types.ObjectId, ref: 'User' }]
 })
 
