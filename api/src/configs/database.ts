@@ -14,5 +14,3 @@ export async function connectToDatabase() {
     throw new Error(`Connection to the database failed: ${e}`)
   }
 }
-
-connectToDatabase().then()
