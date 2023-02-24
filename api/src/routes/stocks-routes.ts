@@ -1,6 +1,8 @@
 import express from 'express'
-import { getNasdaqListedStocks, getStockPrice } from '../controllers/stocks'
-import validateGetStockPriceInput from '../validators/get-stock-price-validator'
+import getStockPrice from '../controllers/stocks/get-stock-price'
+import getNasdaqListedStocks from '../controllers/stocks/get-nasdaq-listed-stocks'
+import validateGetStockPriceInput from '../validators/stocks/get-stock-price-input-validator'
+
 const stocksRouter = express.Router()
 
 stocksRouter.get(
@@ -8,6 +10,7 @@ stocksRouter.get(
   validateGetStockPriceInput,
   getStockPrice
 )
+
 stocksRouter.get('/nasdaq/all', getNasdaqListedStocks)
 
 export default stocksRouter
