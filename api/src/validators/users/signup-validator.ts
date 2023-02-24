@@ -1,12 +1,11 @@
-import joi, { ValidationError } from 'joi'
+import joi from 'joi'
 import { Request, Response, NextFunction } from 'express'
 import { UserSignUpInput } from '../../utils/types'
+import { handleSchemaErrors } from './handle-schema-errors'
 
-const passwordRegex = new RegExp(
-  '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
-)
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/
 
-const schema = joi.object({
+const signUpSchema = joi.object({
   email: joi.string().email().required(),
   username: joi.string().required(),
   password: joi.string().pattern(passwordRegex).min(8).required().messages({
@@ -22,13 +21,7 @@ export default function validateUserSignUpInput(
   res: Response,
   next: NextFunction
 ) {
-  const { error } = schema.validate(req.body)
-  if (error) {
-    if (error instanceof ValidationError) {
-      const errorMessages = error.details.map((e) => e.message).join(', ')
-      return res.status(400).json({ Error: errorMessages })
-    }
-    throw new Error('Request input validation failed')
-  }
+  const { error } = signUpSchema.validate(req.body)
+  handleSchemaErrors(error, res)
   next()
 }

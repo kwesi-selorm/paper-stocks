@@ -1,8 +1,9 @@
-import joi, { ValidationError } from 'joi'
+import joi from 'joi'
 import { Request, Response, NextFunction } from 'express'
 import { UserSignInInput } from '../../utils/types'
+import { handleSchemaErrors } from './handle-schema-errors'
 
-const schema = joi.object({
+const signInInputSchema = joi.object({
   username: joi.string().required(),
   password: joi.string().min(8).required()
 })
@@ -12,13 +13,7 @@ export default function validateUserSignInInput(
   res: Response,
   next: NextFunction
 ) {
-  const { error } = schema.validate(req.body)
-  if (error) {
-    if (error instanceof ValidationError) {
-      const errorMessages = error.details.map((e) => e.message).join(', ')
-      return res.status(400).json({ Error: errorMessages })
-    }
-    throw new Error('Request input validation failed')
-  }
+  const { error } = signInInputSchema.validate(req.body)
+  handleSchemaErrors(error, res)
   next()
 }
