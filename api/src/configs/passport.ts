@@ -26,20 +26,14 @@ passport.use(
   })
 )
 
-// TODO: Find more info on these methods
-passport.serializeUser(async (user, cb) => {
-  const userRecord = await User.findOne({ username: user.username })
-  if (userRecord == null) {
-    return cb(null, false)
-  }
+passport.serializeUser((user, cb) => {
   process.nextTick(() => {
-    return cb(null, userRecord._id)
+    return cb(null, user)
   })
 })
 
-passport.deserializeUser(async (userId: string, cb) => {
-  const userRecord = await User.findOne({ _id: userId })
+passport.deserializeUser(function (user: any, cb) {
   process.nextTick(() => {
-    return cb(null, userRecord)
+    return cb(null, user)
   })
 })
