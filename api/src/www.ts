@@ -1,5 +1,6 @@
 import app from './app'
 import http from 'http'
+import { connectToDatabase } from './configs/database'
 
 const port = process.env.PORT || '3000'
 app.set('port', port)
@@ -9,6 +10,7 @@ const server: http.Server = http.createServer(app)
 server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
+connectToDatabase().then()
 
 function onError(error: any) {
   if (error.syscall !== 'listen') {
