@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose'
-import { UserRecord } from '../utils/types'
 
-const userSchema = new Schema<UserRecord>({
-  _id: Schema.Types.ObjectId,
+const userSchema = new Schema({
+  id: Schema.Types.ObjectId,
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
