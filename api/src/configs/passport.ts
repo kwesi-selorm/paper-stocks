@@ -28,12 +28,12 @@ passport.use(
 
 passport.serializeUser((user, cb) => {
   process.nextTick(() => {
-    return cb(null, user)
+    cb(null, { username: user.username })
   })
 })
 
 passport.deserializeUser(function (user: any, cb) {
   process.nextTick(() => {
-    return cb(null, user)
+    cb(null, { username: user.username })
   })
 })
