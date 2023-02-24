@@ -10,12 +10,12 @@ async function signUp(req: Request, res: Response) {
   const existingEmailUser = await User.findOne({ email })
   const existingUsernameUser = await User.findOne({ username })
   if (existingEmailUser != null) {
-    res
+    return res
       .status(400)
       .json({ Error: `A user with the email ${email} already exists` })
   }
   if (existingUsernameUser != null) {
-    res
+    return res
       .status(400)
       .json({ Error: `A user with the username ${username} already exists` })
   }
@@ -36,7 +36,7 @@ async function signUp(req: Request, res: Response) {
     return res.status(200).json(document)
   } catch (e: unknown) {
     if (e instanceof mongoose.Error) {
-      res.status(400).json({ Error: e.message })
+      return res.status(400).json({ Error: e.message })
     }
     return res.status(400).json({ Error: e })
   }
