@@ -35,7 +35,9 @@ async function signUp(req: Request, res: Response) {
   try {
     const document = new UserModel(saveUserInput)
     await document.save()
-    return res.status(200).json(document)
+    return res
+      .status(200)
+      .json({ id: document._id, username: document.username })
   } catch (e: unknown) {
     if (e instanceof mongoose.Error) {
       return res.status(400).json({ message: e.message })
