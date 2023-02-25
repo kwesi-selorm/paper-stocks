@@ -1,12 +1,14 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
-import User from '../models/user'
-import { decodePasswordHash } from '../utils/password'
-import { UserRecord } from '../utils/types'
+import UserModel from '../models/user'
+import { decodePasswordHash } from '../helpers/password-helper'
+import { UserDocument } from '../utils/types'
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
-    const userRecord: UserRecord | null = await User.findOne({ username })
+    const userRecord: UserDocument | null = await UserModel.findOne({
+      username
+    })
     if (userRecord == null) {
       return done(false, false, {
         message: 'Incorrect username or password'

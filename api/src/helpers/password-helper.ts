@@ -1,5 +1,5 @@
 import * as crypto from 'node:crypto'
-import { EncodePasswordOutput } from './types'
+import { EncodePasswordOutput } from '../utils/types'
 
 export function generatePasswordSalt(): string {
   return crypto.randomBytes(16).toString('hex')
