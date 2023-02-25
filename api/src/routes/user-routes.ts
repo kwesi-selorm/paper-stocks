@@ -1,20 +1,14 @@
 import express = require('express')
 import signUp from '../controllers/users/sign-up'
-import validateUserSignUpInput from '../validators/users/signup-validator'
 import passport from 'passport'
 import signIn from '../controllers/users/sign-in'
 import buyAsset from '../controllers/users/buy-asset'
+import getAssets from '../controllers/users/get-assets'
 const usersRouter = express.Router()
 
-/* GET users listing. */
-usersRouter.get('/', function (req, res) {
-  res.send({ Message: 'Hello World! ' })
-})
-
-usersRouter.post('/signup', validateUserSignUpInput, signUp)
-
+usersRouter.post('/signup', signUp)
 usersRouter.post('/signin', passport.authenticate('local'), signIn)
-
 usersRouter.post('/buy-asset/:userId', buyAsset)
+usersRouter.get('/get-assets/:userId', getAssets)
 
 export default usersRouter
