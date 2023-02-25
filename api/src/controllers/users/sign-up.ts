@@ -38,9 +38,9 @@ async function signUp(req: Request, res: Response) {
     return res.status(200).json(document)
   } catch (e: unknown) {
     if (e instanceof mongoose.Error) {
-      return res.status(400).json({ Error: e.message })
+      return res.status(400).json({ message: e.message })
     }
-    return res.status(400).json({ Error: e })
+    return res.status(400).json({ message: e })
   }
 }
 
