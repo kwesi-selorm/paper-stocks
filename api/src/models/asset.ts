@@ -1,13 +1,23 @@
-import { Schema, model } from 'mongoose'
-import { AssetRecord } from '../utils/types'
+import mongoose, { Schema } from 'mongoose'
+import UserModel from './user'
 
-const assetSchema = new Schema<AssetRecord>({
+export interface IAsset {
+  id: Schema.Types.ObjectId
+  position: number
+  returnNumber: number
+  returnPercent: number
+  lastPrice: number
+  users: Schema.Types.ObjectId[]
+}
+
+const assetSchema: Schema = new Schema<IAsset>({
   id: Schema.Types.ObjectId,
   position: { type: Number, required: true },
   returnNumber: { type: Number, required: true },
   returnPercent: { type: Number, required: true },
   lastPrice: { type: Number, required: true },
-  users: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+  users: [{ type: Schema.Types.ObjectId, ref: UserModel }]
 })
 
-export default model('Stock', assetSchema, 'assets')
+const AssetModel = mongoose.model<IAsset>('Asset', assetSchema, 'assets')
+export default AssetModel
