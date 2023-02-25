@@ -1,12 +1,12 @@
 import { Schema } from 'mongoose'
-
-export interface AssetRecord {
-  id: Schema.Types.ObjectId
+export type AssetDocument = {
+  _id: Schema.Types.ObjectId
+  symbol: string
+  name: string
   position: number
-  returnNumber: number
-  returnPercent: number
-  lastPrice: number
-  users: [UserRecord]
+  averagePrice: number
+  userId: string
+  _v: number
 }
 
 export type EncodePasswordOutput = {
@@ -28,25 +28,36 @@ export type NasdaqListedStock = {
   testIssue: string
 }
 
+export type SaveAssetInput = {
+  params: {
+    userId: string
+  }
+  body: {
+    name: string
+    symbol: string
+    position: number
+    lastPrice: number
+  }
+}
+
 export type SaveUserInput = {
   email: string
   username: string
   passwordHash: string
   passwordSalt: string
   passwordClue: string
-  assets: AssetRecord[]
   buyingPower: number
 }
 
-export interface UserRecord {
+export type UserDocument = {
   _id: Schema.Types.ObjectId
   email: string
   username: string
   passwordHash: string
   passwordSalt: string
   passwordClue: string
-  assets: AssetRecord[]
   buyingPower: number
+  _v: number
 }
 
 export type UserSignInInput = {
