@@ -1,19 +1,8 @@
-import joi from 'joi'
-import { Request, Response, NextFunction } from 'express'
-import { UserSignInInput } from '../../utils/types'
-import { handleSchemaErrors } from './handle-schema-errors'
+import { Request } from 'express'
+import { handleSchemaErrors } from '../handle-schema-errors'
+import { signInInputSchema } from '../joi-schema'
 
-const signInInputSchema = joi.object({
-  username: joi.string().required(),
-  password: joi.string().min(8).required()
-})
-
-export default function validateUserSignInInput(
-  req: Request<UserSignInInput>,
-  res: Response,
-  next: NextFunction
-) {
+export default function validateUserSignInInput(req: Request) {
   const { error } = signInInputSchema.validate(req.body)
-  handleSchemaErrors(error, res)
-  next()
+  return handleSchemaErrors(error)
 }
