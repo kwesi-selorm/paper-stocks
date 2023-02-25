@@ -3,6 +3,7 @@ import signUp from '../controllers/users/sign-up'
 import validateUserSignUpInput from '../validators/users/signup-validator'
 import passport from 'passport'
 import signIn from '../controllers/users/sign-in'
+import buyAsset from '../controllers/users/buy-asset'
 const usersRouter = express.Router()
 
 /* GET users listing. */
@@ -13,5 +14,7 @@ usersRouter.get('/', function (req, res) {
 usersRouter.post('/signup', validateUserSignUpInput, signUp)
 
 usersRouter.post('/signin', passport.authenticate('local'), signIn)
+
+usersRouter.post('/buy-asset/:userId', buyAsset)
 
 export default usersRouter
