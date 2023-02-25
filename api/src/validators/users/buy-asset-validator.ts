@@ -1,22 +1,12 @@
-import joi, { ValidationError } from 'joi'
+import { ValidationError } from 'joi'
 import { Request } from 'express'
+import { buyAssetInputSchema, userIdParamSchema } from '../joi-schema'
 
-const bodySchema = joi.object({
-  name: joi.string().required(),
-  symbol: joi.string().required(),
-  position: joi.number().required(),
-  lastPrice: joi.number().required()
-})
-
-const paramsSchema = joi.object({
-  userId: joi.string().required()
-})
-
-export default function validateSaveAssetInput(req: Request) {
-  const { error: bodyError } = bodySchema.validate(req.body, {
+export default function validateBuyAssetInput(req: Request) {
+  const { error: bodyError } = buyAssetInputSchema.validate(req.body, {
     abortEarly: false
   })
-  const { error: paramsError } = paramsSchema.validate(req.params)
+  const { error: paramsError } = userIdParamSchema.validate(req.params)
   let errorMessages = ''
   if (
     bodyError instanceof ValidationError ||
@@ -29,7 +19,5 @@ export default function validateSaveAssetInput(req: Request) {
       errorMessages += paramsError.details.map((e) => e.message).join(', ')
     }
     return errorMessages
-  } else {
-    return
   }
 }
