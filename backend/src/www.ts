@@ -1,7 +1,7 @@
 import app from './app'
 import http from 'http'
-import mongoose, { Error } from 'mongoose'
 import * as dotenv from 'dotenv'
+import connectToDatabase from './configs/database'
 dotenv.config()
 
 const port = process.env.PORT || '3000'
@@ -13,13 +13,7 @@ server.listen(port)
 server.on('error', onError)
 server.on('listening', onListening)
 
-if (!process.env.MONGODB_URL) {
-  throw new Error('process.env.MONGODB_URL is not defined')
-}
-mongoose.set('strictQuery', false)
-mongoose.connect(process.env.MONGODB_URL).then()
-require('../src/models/user')
-require('../src/models/asset')
+connectToDatabase()
 
 function onError(error: any) {
   if (error.syscall !== 'listen') {
