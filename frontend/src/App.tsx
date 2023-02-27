@@ -1,14 +1,8 @@
-import { useState } from "react";
-import React from "react";
-import "./styles/App.css";
-import { DatePicker } from "antd";
+import "./styles/App.css"
+import React from "react"
 
 function App() {
-  return (
-    <div className="App">
-      <h1>Paper Stocks</h1>
-    </div>
-  );
+  return <div className="App"></div>
 }
 
-export default App;
+export default App
