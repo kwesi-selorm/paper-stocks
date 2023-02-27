@@ -5,13 +5,13 @@ dotenv.config()
 function connectToDatabase() {
   if (
     process.env.MONGODB_URL_TEST === undefined ||
-    process.env.MONGODB_URL_PROD === undefined
+    process.env.DATABASE_URL === undefined
   ) {
     throw new Error('MongoDB connection string is not defined')
   }
   mongoose.set('strictQuery', false)
   if (process.env.NODE_ENV === 'prod') {
-    mongoose.connect(process.env.MONGODB_URL_PROD, () => {
+    mongoose.connect(process.env.DATABASE_URL, () => {
       console.log('Connected to MongoDB prod database')
     })
   } else {
