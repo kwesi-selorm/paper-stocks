@@ -1,42 +1,41 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Button, Form, Input, message } from "antd"
-import { SigninInput } from "../types"
-import { useQuery } from "react-query"
-import signIn from "../helpers/api-functions/signin-function"
-import ErrorPage from "./error-page"
+import { SignInInput } from "../types"
+import signIn from "../api/signin"
 import styles from "../styles/signin-page.module.css"
-
-const initialInputs = { username: "", password: "" }
+import { useNavigate } from "react-router-dom"
 
 export const SignInPage: React.FC = () => {
-  const [input, setInput] = React.useState<SigninInput>(initialInputs)
-  const { isLoading, isError, error, data, refetch } = useQuery(
-    ["signin", input],
-    () => signIn(input),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-      onSuccess: () => {
-        message.success("Logged in successfully").then()
-      }
+  const [input, setInput] = useState<SignInInput>({
+    username: "",
+    password: ""
+  })
+  const [user, setUser] = useState<{ name: string; id: string } | null>(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user != null) {
+      navigate(`/assets/${user.id}`)
+      message.success("Logged in successfully").then()
     }
-  )
+  }, [user])
 
   async function handleSubmit() {
-    await refetch()
-  }
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
-  if (isError) {
-    message.error("Login failed").then()
-    return <ErrorPage error={error} />
+    try {
+      const res = await signIn(input)
+      const data = await res.data
+      setUser(data)
+    } catch (error: any) {
+      console.log(error)
+      if (error.response.status === 401) {
+        message.error("Invalid username or password")
+      }
+      message.error(error.message)
+    }
   }
 
   return (
-    <Form className={styles["signin-form"]} onFinish={handleSubmit}>
+    <Form className={styles["signin-form"]}>
       <Form.Item
         label="Username"
         name="username"
@@ -63,7 +62,7 @@ export const SignInPage: React.FC = () => {
         />
       </Form.Item>
       <Form.Item>
-        <Button htmlType="submit" type="primary">
+        <Button htmlType="submit" type="primary" onClick={handleSubmit}>
           Submit
         </Button>
       </Form.Item>
