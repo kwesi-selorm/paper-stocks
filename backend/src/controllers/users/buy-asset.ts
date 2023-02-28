@@ -3,7 +3,7 @@ import validateBuyAssetInput from '../../validators/users/buy-asset-validator'
 import UserModel from '../../models/user'
 import nasdaqStocks from '../../../assets/nasdaq-listed-stocks'
 import AssetModel from '../../models/asset'
-import { findNewPositionAndAverage } from '../../helpers/asset-helper'
+import { findNewPositionAndAverage } from '../../helpers/asset-calculations'
 
 async function buyAsset(req: Request, res: Response) {
   const errorMessages = validateBuyAssetInput(req)
