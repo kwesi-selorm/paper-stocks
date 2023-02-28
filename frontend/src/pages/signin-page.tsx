@@ -17,6 +17,7 @@ export const SignInPage: React.FC = () => {
     if (user != null) {
       navigate(`/assets/${user.id}`)
       message.success("Logged in successfully").then()
+      window.localStorage.setItem("userId", user.id)
     }
   }, [user])
 
@@ -26,7 +27,6 @@ export const SignInPage: React.FC = () => {
       const data = await res.data
       setUser(data)
     } catch (error: any) {
-      console.log(error)
       if (error.response.status === 401) {
         message.error("Invalid username or password")
       }
