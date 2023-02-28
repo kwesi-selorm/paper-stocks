@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import HomePage from "./pages/home-page"
 import SignInPage from "./pages/signin-page"
 import { QueryClient, QueryClientProvider } from "react-query"
+import AssetsPage from "./pages/assets-page"
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/signin",
     element: <SignInPage />
+  },
+  {
+    path: "/assets/:userId",
+    element: <AssetsPage />
   }
 ])
 
