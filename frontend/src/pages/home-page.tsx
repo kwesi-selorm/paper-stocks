@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 const HomePage = () => {
   return (
     <div>
-      <h1>Welcome to the Paper Stocks application</h1>
+      <h1>Paper Stocks</h1>
       <Link to={"/signin"}>
         <Button type={"primary"} size={"large"}>
           Sign in
