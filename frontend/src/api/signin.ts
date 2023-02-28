@@ -14,6 +14,5 @@ export default async function signIn(input: SignInInput) {
       "Content-Type": "application/json"
     }
   }
-  const response = await axios.request(axiosConfig)
-  return await response.data
+  return await axios.request(axiosConfig)
 }
