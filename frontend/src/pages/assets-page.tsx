@@ -11,7 +11,6 @@ const AssetsPage: React.FC = () => {
   useEffect(() => {
     if (userId !== undefined) {
       fetchAssets(userId).then()
-      return
     }
   }, [userId])
 
@@ -21,6 +20,7 @@ const AssetsPage: React.FC = () => {
       if (res !== undefined) {
         const data = await res.data
         setAssets(data)
+        window.localStorage.setItem("assets", JSON.stringify(data))
       }
     } catch (error: any) {
       if (error.response) {
