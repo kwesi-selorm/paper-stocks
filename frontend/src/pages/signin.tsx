@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Button, Form, Input, message } from "antd"
-import { SignInInput } from "../types"
+import { SignInInput } from "@/utils/types"
 import signIn from "../api/signin"
-import styles from "../styles/signin-page.module.css"
-import { useNavigate } from "react-router-dom"
+import { useRouter } from "next/router"
+import styles from "../styles/SignIn.module.css"
 
 export const SignInPage: React.FC = () => {
   const [input, setInput] = useState<SignInInput>({
@@ -11,15 +11,15 @@ export const SignInPage: React.FC = () => {
     password: ""
   })
   const [user, setUser] = useState<{ name: string; id: string } | null>(null)
-  const navigate = useNavigate()
+  const router = useRouter()
 
   useEffect(() => {
     if (user != null) {
-      navigate(`/assets/${user.id}`)
+      router.push(`/assets/${user.id}`).then()
       message.success("Logged in successfully").then()
       window.localStorage.setItem("userId", user.id)
     }
-  }, [user])
+  }, [router, user])
 
   async function handleSubmit() {
     try {
@@ -35,7 +35,7 @@ export const SignInPage: React.FC = () => {
   }
 
   return (
-    <Form className={styles["signin-form"]}>
+    <Form className={styles["form"]}>
       <Form.Item
         label="Username"
         name="username"

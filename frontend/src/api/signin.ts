@@ -1,6 +1,6 @@
 import axios from "axios"
-import { apiUrlTest } from "../utils/api"
-import { SignInInput } from "../types"
+import { apiUrlTest } from "@/utils/constants"
+import { SignInInput } from "@/utils/types"
 
 export default async function signIn(input: SignInInput) {
   const axiosConfig = {

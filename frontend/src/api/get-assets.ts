@@ -1,4 +1,4 @@
-import { apiUrlTest } from "../utils/api"
+import { apiUrlTest } from "@/utils/constants"
 import axios from "axios"
 
 export default async function getAssets(userId: string | null) {
@@ -9,9 +9,9 @@ export default async function getAssets(userId: string | null) {
     method: "GET",
     url: `${apiUrlTest}/users/get-assets/${userId}`,
     headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "max-age=60*60*1000"
+      "Content-Type": "application/json"
     }
   }
-  return await axios.request(axiosConfig)
+  const response = await axios.request(axiosConfig)
+  return await response.data
 }

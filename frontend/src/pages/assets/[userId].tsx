@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
-import getAssets from "../api/get-assets"
+import getAssets from "../../api/get-assets"
 import { Button, message } from "antd"
-import { Asset } from "../types"
+import { Asset } from "@/utils/types"
+import Link from "next/link"
+import { useRouter } from "next/router"
+import styles from "../../styles/Assets.module.css"
 
 const AssetsPage: React.FC = () => {
   const [assets, setAssets] = useState<Asset[]>([])
-  const { userId } = useParams()
+  const router = useRouter()
+  const { userId } = router.query
 
   useEffect(() => {
-    if (userId !== undefined) {
+    if (!userId) {
+      return
+    }
+    if (typeof userId === "string") {
       fetchAssets(userId).then()
     }
-  }, [userId])
+  }, [userId, assets])
 
   async function fetchAssets(id: string) {
     try {
@@ -20,7 +26,6 @@ const AssetsPage: React.FC = () => {
       if (res !== undefined) {
         const data = await res.data
         setAssets(data)
-        window.localStorage.setItem("assets", JSON.stringify(data))
       }
     } catch (error: any) {
       if (error.response) {
@@ -31,15 +36,16 @@ const AssetsPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className={styles["assets"]}>
       <h1>Assets Page</h1>
       <h2>{userId}</h2>
-      {assets.map((asset) => (
-        <ul key={asset._id}>
-          <li key={asset._id}>{asset.name}</li>
-        </ul>
-      ))}
-      <Link to={"/"}>
+      {assets &&
+        assets.map((asset) => (
+          <ul key={asset._id}>
+            <li key={asset._id}>{asset.name}</li>
+          </ul>
+        ))}
+      <Link href={"/"}>
         <Button htmlType={"button"}>Back to home</Button>
       </Link>
     </div>
