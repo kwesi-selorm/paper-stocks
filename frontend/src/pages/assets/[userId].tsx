@@ -8,24 +8,23 @@ import styles from "../../styles/Assets.module.css"
 
 const AssetsPage: React.FC = () => {
   const [assets, setAssets] = useState<Asset[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { userId } = router.query
+  const id = userId as string
 
   useEffect(() => {
-    if (!userId) {
-      return
-    }
-    if (typeof userId === "string") {
-      fetchAssets(userId).then()
-    }
-  }, [userId, assets])
+    fetchAssets(id).then((data) => setAssets(data))
+    console.log(assets)
+  }, [id])
 
   async function fetchAssets(id: string) {
+    setIsLoading(true)
     try {
       const res = await getAssets(id)
       if (res !== undefined) {
-        const data = await res.data
-        setAssets(data)
+        setIsLoading(false)
+        return await res.data
       }
     } catch (error: any) {
       if (error.response) {
@@ -35,10 +34,14 @@ const AssetsPage: React.FC = () => {
     }
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
   return (
     <div className={styles["assets"]}>
       <h1>Assets Page</h1>
-      <h2>{userId}</h2>
+      <h4>{userId}</h4>
       {assets &&
         assets.map((asset) => (
           <ul key={asset._id}>
@@ -46,7 +49,9 @@ const AssetsPage: React.FC = () => {
           </ul>
         ))}
       <Link href={"/"}>
-        <Button htmlType={"button"}>Back to home</Button>
+        <Button htmlType={"button"} type={"primary"}>
+          Back to home
+        </Button>
       </Link>
     </div>
   )
