@@ -1,8 +1,8 @@
 import express = require('express')
-const router = express.Router()
+const indexRouter = express.Router()
 
-router.get('/', function (req, res) {
-  res.send('Hello World!')
+indexRouter.get('/', function (req, res) {
+  res.redirect('/')
 })
 
-export default router
+export default indexRouter
