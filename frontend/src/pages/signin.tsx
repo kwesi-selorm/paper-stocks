@@ -5,11 +5,13 @@ import signIn from "../api/signin"
 import { useRouter } from "next/router"
 import styles from "../styles/SignIn.module.css"
 
+const initialState = {
+  username: "",
+  password: ""
+}
+
 export const SignInPage: React.FC = () => {
-  const [input, setInput] = useState<SignInInput>({
-    username: "",
-    password: ""
-  })
+  const [input, setInput] = useState<SignInInput>(initialState)
   const [user, setUser] = useState<{ name: string; id: string } | null>(null)
   const router = useRouter()
 
@@ -17,7 +19,6 @@ export const SignInPage: React.FC = () => {
     if (user != null) {
       router.push(`/assets/${user.id}`).then()
       message.success("Logged in successfully").then()
-      window.localStorage.setItem("userId", user.id)
     }
   }, [router, user])
 
