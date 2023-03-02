@@ -2,13 +2,10 @@ import { Request, Response } from 'express'
 import { encodePassword } from '../../helpers/password-helper'
 import mongoose from 'mongoose'
 import UserModel from '../../models/user'
-import validateUserSignUpInput from '../../validators/users/signup-validator'
 
 async function signUp(req: Request, res: Response) {
-  const errorMessages = validateUserSignUpInput(req)
-  if (errorMessages !== undefined) {
-    return res.status(400).json({ message: errorMessages })
-  }
+  console.log(req.body.token)
+  const token = req.body.token
   const { email, username, password, passwordClue } = req.body
   const { passwordSalt, passwordHash } = encodePassword(password)
   const existingEmailUser = await UserModel.findOne({ email })
@@ -37,7 +34,7 @@ async function signUp(req: Request, res: Response) {
     await document.save()
     return res
       .status(200)
-      .json({ id: document._id, username: document.username })
+      .json({ id: document._id, username: document.username, token })
   } catch (e: unknown) {
     if (e instanceof mongoose.Error) {
       return res.status(400).json({ message: e.message })

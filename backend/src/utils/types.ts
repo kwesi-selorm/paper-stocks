@@ -60,12 +60,12 @@ export type UserDocument = {
   _v: number
 }
 
-export type UserSignInInput = {
+export type SignInInput = {
   email: string
   password: string
 }
 
-export type UserSignUpInput = {
+export type SignUpInput = {
   email: string
   username: string
   password: string
@@ -76,4 +76,7 @@ export type StockPrice = {
   price: string
 }
 
-export type Ticker = string
+export type TokenUser = {
+  username: string
+  password: string
+}
