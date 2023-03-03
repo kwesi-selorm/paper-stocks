@@ -7,11 +7,17 @@ import { generateToken, verifyToken } from '../middleware/jwt-auth'
 import validateSignUpInput from '../validators/users/signup-validator'
 import validateSignInInput from '../validators/users/signin-validator'
 import { validateGetAssetsInput } from '../validators/users/get-assets-validator'
+import validateBuyAssetInput from '../validators/users/buy-asset-validator'
 const usersRouter = express.Router()
 
 usersRouter.post('/signup', validateSignUpInput, generateToken, signUp)
 usersRouter.post('/signin', validateSignInInput, generateToken, signIn)
-usersRouter.post('/buy-asset/:userId', buyAsset)
+usersRouter.post(
+  '/buy-asset/:userId',
+  validateBuyAssetInput,
+  verifyToken,
+  buyAsset
+)
 usersRouter.get(
   '/get-assets/:userId',
   validateGetAssetsInput,
