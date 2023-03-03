@@ -14,10 +14,6 @@ export type EncodePasswordOutput = {
   passwordHash: string
 }
 
-export type GetStockPriceInput = {
-  symbol: string
-}
-
 export type NasdaqListedStock = {
   companyName: string
   financialStatus: string
@@ -26,27 +22,6 @@ export type NasdaqListedStock = {
   securityName: string
   symbol: string
   testIssue: string
-}
-
-export type SaveAssetInput = {
-  params: {
-    userId: string
-  }
-  body: {
-    name: string
-    symbol: string
-    position: number
-    lastPrice: number
-  }
-}
-
-export type SaveUserInput = {
-  email: string
-  username: string
-  passwordHash: string
-  passwordSalt: string
-  passwordClue: string
-  buyingPower: number
 }
 
 export type UserDocument = {
@@ -60,23 +35,6 @@ export type UserDocument = {
   _v: number
 }
 
-export type SignInInput = {
-  email: string
-  password: string
-}
-
-export type SignUpInput = {
-  email: string
-  username: string
-  password: string
-  passwordClue: string
-}
-
 export type StockPrice = {
   price: string
-}
-
-export type TokenUser = {
-  username: string
-  password: string
 }
