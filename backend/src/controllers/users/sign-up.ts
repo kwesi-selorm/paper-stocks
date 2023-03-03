@@ -8,8 +8,10 @@ async function signUp(req: Request, res: Response) {
   const token = req.body.token
   const { email, username, password, passwordClue } = req.body
   const { passwordSalt, passwordHash } = encodePassword(password)
-  const existingEmailUser = await UserModel.findOne({ email })
-  const existingUsernameUser = await UserModel.findOne({ username })
+  const [existingEmailUser, existingUsernameUser] = await Promise.all([
+    UserModel.findOne({ email }),
+    UserModel.findOne({ username })
+  ])
   if (existingEmailUser != null) {
     return res
       .status(400)
