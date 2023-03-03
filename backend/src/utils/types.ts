@@ -28,27 +28,6 @@ export type NasdaqListedStock = {
   testIssue: string
 }
 
-export type SaveAssetInput = {
-  params: {
-    userId: string
-  }
-  body: {
-    name: string
-    symbol: string
-    position: number
-    lastPrice: number
-  }
-}
-
-export type SaveUserInput = {
-  email: string
-  username: string
-  passwordHash: string
-  passwordSalt: string
-  passwordClue: string
-  buyingPower: number
-}
-
 export type UserDocument = {
   _id: Schema.Types.ObjectId
   email: string
@@ -60,20 +39,6 @@ export type UserDocument = {
   _v: number
 }
 
-export type UserSignInInput = {
-  email: string
-  password: string
-}
-
-export type UserSignUpInput = {
-  email: string
-  username: string
-  password: string
-  passwordClue: string
-}
-
 export type StockPrice = {
   price: string
 }
-
-export type Ticker = string

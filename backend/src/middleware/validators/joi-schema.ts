@@ -1,5 +1,7 @@
 import joi from 'joi'
 
+//TODO: Add a validator for the user id length in params
+
 export const buyAssetInputSchema = joi.object({
   name: joi.string().required(),
   symbol: joi.string().required(),

@@ -1,6 +1,6 @@
 import joi, { ValidationError } from 'joi'
 import { Request, Response, NextFunction } from 'express'
-import { GetStockPriceInput } from '../../utils/types'
+import { GetStockPriceInput } from '../../../utils/types'
 
 const schema = joi.object({
   symbol: joi.string().required()

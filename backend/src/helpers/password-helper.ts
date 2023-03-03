@@ -13,7 +13,7 @@ export function encodePassword(password: string): EncodePasswordOutput {
   return { passwordSalt, passwordHash }
 }
 
-export function decodePasswordHash(
+export function verifyPassword(
   password: string,
   salt: string,
   dbPasswordHash: string
