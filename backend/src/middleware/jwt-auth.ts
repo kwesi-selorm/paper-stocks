@@ -1,5 +1,4 @@
-import { SignInInput, TokenUser } from '../utils/types'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { NextFunction, Request, Response } from 'express'
 import User from '../models/user'
@@ -12,13 +11,13 @@ function generateToken(req: Request, res: Response, next: NextFunction) {
   if (secret === undefined) {
     throw new Error('JWT_SECRET is required for authentication')
   }
+
   req.body.token = jwt.sign(
-    { username: user.username, password: user.password },
+    { data: { username: user.username, password: user.password } },
     secret,
-    {
-      expiresIn: '2m'
-    }
+    { expiresIn: '24h' }
   )
+
   return next()
 }
 
@@ -29,7 +28,6 @@ export async function verifyToken(
 ) {
   const authHeader = req.headers.authorization
   const { userId } = req.params
-  console.log(userId)
   const secret = process.env.JWT_SECRET
   if (secret === undefined) {
     throw new Error('JWT_SECRET is not defined')
@@ -46,28 +44,23 @@ export async function verifyToken(
       message: 'Unauthorized: User not found'
     })
   }
-  let user: TokenUser | undefined
+  let user: JwtPayload | string
   try {
-    user = (await jwt.verify(token, secret)) as TokenUser | undefined
+    user = jwt.verify(token, secret, { maxAge: '24h' }) as JwtPayload
   } catch (err) {
     return res.status(401).json({
-      message: 'Unauthorized: Invalid token'
-    })
-  }
-  if (user === undefined) {
-    return res.status(401).json({
-      message: 'Unauthorized: Invalid token'
+      message: 'Unauthorized: Invalid or expired token. Please sign in again'
     })
   }
 
   const isAuthorized = verifyPassword(
-    user.password,
+    user.data.password,
     userRecord.passwordSalt,
     userRecord.passwordHash
   )
   if (!isAuthorized) {
     return res.status(401).json({
-      message: 'Unauthorized: Invalid or expired token. Please sign in again'
+      message: 'Unauthorized: Invalid username or password'
     })
   }
   return next()
