@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { validateGetAssetsInput } from '../../validators/users/get-assets-validator'
 import AssetModel from '../../models/asset'
 
 async function getAssets(req: Request, res: Response) {
