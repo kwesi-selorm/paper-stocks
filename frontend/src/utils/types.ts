@@ -7,7 +7,7 @@ export type UserParam = {
   userId: string
 }
 
-export type Asset = {
+export interface Asset {
   _id: string
   symbol: string
   name: string
@@ -16,6 +16,12 @@ export type Asset = {
   value: number
   userId: string
   __v: number
+}
+
+export interface AssetTableRecord
+  extends Omit<Asset, "averagePrice" | "value"> {
+  averagePrice: string
+  value: string
 }
 
 export type LoggedInUser = {
