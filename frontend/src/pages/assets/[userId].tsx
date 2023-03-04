@@ -4,7 +4,8 @@ import { Button } from "antd"
 import { Asset, LoggedInUser } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import styles from "../../styles/Assets.module.css"
+import styles from "../../styles/pages/Assets.module.css"
+import AssetCard from "@/components/asset-card"
 
 type Props = {
   user: LoggedInUser
@@ -36,12 +37,11 @@ const AssetsPage: React.FC<Props> = () => {
   return (
     <div className={styles["assets"]}>
       <h1>{user?.username}</h1>
-      <h4>{userId}</h4>
       {assets &&
         assets.map((asset) => (
-          <ul key={asset._id}>
-            <li key={asset._id}>{asset.name}</li>
-          </ul>
+          <div key={asset._id}>
+            <AssetCard asset={asset} />
+          </div>
         ))}
       <Link href={"/"}>
         <Button htmlType={"button"} type={"primary"}>

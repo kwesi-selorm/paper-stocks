@@ -3,7 +3,9 @@ import { Button, Form, Input, message } from "antd"
 import { SignInInput } from "@/utils/types"
 import signIn from "../api/signin"
 import { useRouter } from "next/router"
-import styles from "../styles/SignIn.module.css"
+import styles from "../styles/pages/SignIn.module.css"
+import Link from "next/link"
+import ButtonsRow from "@/components/buttons-row"
 
 const initialState = {
   username: "",
@@ -63,11 +65,16 @@ export const SignInPage: React.FC = () => {
           onChange={(e) => setInput({ ...input, password: e.target.value })}
         />
       </Form.Item>
-      <Form.Item>
+      <ButtonsRow>
         <Button htmlType="submit" type="primary" onClick={handleSubmit}>
           Submit
         </Button>
-      </Form.Item>
+        <Link href="/">
+          <Button htmlType="button" type="primary">
+            Cancel
+          </Button>
+        </Link>
+      </ButtonsRow>
     </Form>
   )
 }
