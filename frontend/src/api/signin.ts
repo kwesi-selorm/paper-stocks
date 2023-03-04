@@ -1,11 +1,12 @@
 import axios from "axios"
-import { apiUrlTest } from "@/utils/constants"
+import { apiUrl } from "@/utils/constants"
 import { SignInInput } from "@/utils/types"
 
 export default async function signIn(input: SignInInput) {
+  console.log(apiUrl)
   const axiosConfig = {
     method: "POST",
-    url: `${apiUrlTest}/users/signin`,
+    url: `${apiUrl}/users/signin`,
     data: {
       username: input.username,
       password: input.password

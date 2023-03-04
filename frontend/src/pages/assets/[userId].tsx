@@ -7,6 +7,8 @@ import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
 import AssetsTable from "@/components/assets-table"
 import CashDetails from "@/components/cash-details"
+import AssetsGraph from "@/components/assets-graph"
+import BuyFirstAsset from "@/components/buy-first-asset"
 
 type Props = {
   user: LoggedInUser
@@ -39,9 +41,10 @@ const AssetsPage: React.FC<Props> = () => {
     <div className={styles["assets-page"]}>
       <h1 className={styles["username"]}>{user?.username}</h1>
       {assets && user && <CashDetails assets={assets} user={user} />}
-      {assets && <AssetsTable assets={assets} />}
+      {assets.length != 0 ? <AssetsGraph assets={assets} /> : null}
+      {assets.length != 0 ? <AssetsTable assets={assets} /> : <BuyFirstAsset />}
       <Link href={"/"}>
-        <Button htmlType={"button"} type={"primary"}>
+        <Button htmlType={"button"} type={"primary"} size={"large"}>
           Back to home
         </Button>
       </Link>

@@ -9,6 +9,10 @@ export interface Asset {
   __v: number
 }
 
+export interface AssetPlotData extends Omit<Asset, "value"> {
+  value: string
+}
+
 export interface AssetTableRecord
   extends Omit<Asset, "averagePrice" | "value"> {
   averagePrice: string
