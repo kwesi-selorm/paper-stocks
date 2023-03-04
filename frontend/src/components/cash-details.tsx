@@ -2,6 +2,7 @@ import { Asset, LoggedInUser } from "@/utils/types"
 import React from "react"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import styles from "../styles/components/CashDetails.module.css"
+import { Divider } from "antd"
 
 type RowProps = {
   assets: Asset[]
@@ -32,6 +33,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
         text="Purchasing Power"
         value={formatToCurrencyString(user.buyingPower)}
       />
+      <Divider type="vertical" />
       <RowItem
         text="Net Assets"
         value={formatToCurrencyString(netAssetValue)}
