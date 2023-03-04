@@ -16,3 +16,9 @@ export type Asset = {
   userId: string
   __v: number
 }
+
+export type LoggedInUser = {
+  id: string
+  username: string
+  token: string
+}

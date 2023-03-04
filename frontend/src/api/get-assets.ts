@@ -2,11 +2,7 @@ import { apiUrlTest } from "@/utils/constants"
 import axios from "axios"
 import { message } from "antd"
 
-export async function getAssets(
-  userId: string,
-  setIsLoading: (isLoading: boolean) => void
-) {
-  setIsLoading(true)
+export async function getAssets(userId: string, token: string) {
   if (!userId) {
     return
   }
@@ -14,14 +10,14 @@ export async function getAssets(
     method: "GET",
     url: `${apiUrlTest}/users/get-assets/${userId}`,
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
     }
   }
 
   try {
     const res = await axios.request(axiosConfig)
     if (res !== undefined) {
-      setIsLoading(false)
       return await res.data
     }
   } catch (error: any) {
