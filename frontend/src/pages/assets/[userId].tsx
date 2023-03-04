@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
-import { Button } from "antd"
+import { Button, Spin } from "antd"
 import { Asset, LoggedInUser } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
-import AssetTable from "@/components/asset-table"
+import AssetsTable from "@/components/assets-table"
+import CashDetails from "@/components/cash-details"
 
 type Props = {
   user: LoggedInUser
@@ -31,13 +32,14 @@ const AssetsPage: React.FC<Props> = () => {
   }, [id])
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spin size={"large"} />
   }
 
   return (
     <div className={styles["assets-page"]}>
-      <h1>{user?.username}</h1>
-      {assets && <AssetTable assets={assets} />}
+      <h1 className={styles["username"]}>{user?.username}</h1>
+      {assets && user && <CashDetails assets={assets} user={user} />}
+      {assets && <AssetsTable assets={assets} />}
       <Link href={"/"}>
         <Button htmlType={"button"} type={"primary"}>
           Back to home
