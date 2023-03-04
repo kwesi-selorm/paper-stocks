@@ -1,0 +1,9 @@
+.prompt {
+  font-size: 1.5em;
+  margin: 0 auto 3em;
+}
+
+.prompt > button {
+  margin-top: 2em;
+  width: 10%;
+}
