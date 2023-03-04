@@ -1,6 +1,4 @@
 .assets-page {
-  /*background: #000;*/
-  /*color: #fff;*/
   height: 100vh;
   padding-bottom: 10%;
   padding-top: 5%;
@@ -9,6 +7,6 @@
 }
 
 .username {
-  font-size: 3em;
-  margin-bottom: 1em;
+  font-size: 2em;
+  margin-bottom: 0.7em;
 }

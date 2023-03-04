@@ -1,10 +1,7 @@
 .cash-details-row {
-  /*background-color: #000;*/
-  /*color: #fff;*/
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  font-size: 1.3em;
   gap: 2em;
   justify-content: center;
   margin: 0 auto 3em;
