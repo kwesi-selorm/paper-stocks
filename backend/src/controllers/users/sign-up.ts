@@ -36,7 +36,12 @@ async function signUp(req: Request, res: Response) {
     await document.save()
     return res
       .status(200)
-      .json({ id: document._id, username: document.username, token })
+      .json({
+        id: document._id,
+        username: document.username,
+        token,
+        buyingPower: document.buyingPower
+      })
   } catch (e: unknown) {
     if (e instanceof mongoose.Error) {
       return res.status(400).json({ message: e.message })

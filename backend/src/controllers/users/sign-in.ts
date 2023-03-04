@@ -12,7 +12,12 @@ async function signIn(req: Request, res: Response) {
 
   res
     .status(200)
-    .json({ id: userDocument._id, username: userDocument.username, token })
+    .json({
+      id: userDocument._id,
+      username: userDocument.username,
+      token,
+      buyingPower: userDocument.buyingPower
+    })
 }
 
 export default signIn
