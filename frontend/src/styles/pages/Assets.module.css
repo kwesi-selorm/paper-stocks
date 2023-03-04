@@ -6,3 +6,8 @@
   margin: 0 auto;
   text-align: center;
 }
+
+.username {
+  font-size: 3em;
+  margin-bottom: 1em;
+}

@@ -10,7 +10,7 @@ type Props = {
   assets: Asset[]
 }
 
-const AssetTable: React.FC<Props> = ({ assets }) => {
+const AssetsTable: React.FC<Props> = ({ assets }) => {
   const data: AssetTableRecord[] = assets.map((a) => ({
     ...a,
     averagePrice: formatToCurrencyString(a.averagePrice),
@@ -57,4 +57,4 @@ const AssetTable: React.FC<Props> = ({ assets }) => {
   )
 }
 
-export default AssetTable
+export default AssetsTable

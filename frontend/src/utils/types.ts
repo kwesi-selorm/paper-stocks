@@ -1,12 +1,3 @@
-export type SignInInput = {
-  username: string
-  password: string
-}
-
-export type UserParam = {
-  userId: string
-}
-
 export interface Asset {
   _id: string
   symbol: string
@@ -28,4 +19,10 @@ export type LoggedInUser = {
   id: string
   username: string
   token: string
+  buyingPower: number
+}
+
+export type SignInInput = {
+  username: string
+  password: string
 }
