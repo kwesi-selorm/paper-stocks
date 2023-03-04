@@ -27,6 +27,7 @@ export const SignInPage: React.FC = () => {
       const res = await signIn(input)
       const data = await res.data
       setUser(data)
+      window.localStorage.setItem("user", JSON.stringify(data))
     } catch (error: any) {
       if (error.response.status === 401) {
         message.error("Invalid username or password")
