@@ -13,6 +13,7 @@ export type Asset = {
   name: string
   position: number
   averagePrice: number
+  value: number
   userId: string
   __v: number
 }

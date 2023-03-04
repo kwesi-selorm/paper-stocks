@@ -5,7 +5,7 @@ import { Asset, LoggedInUser } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
-import AssetCard from "@/components/asset-card"
+import AssetTable from "@/components/asset-table"
 
 type Props = {
   user: LoggedInUser
@@ -35,14 +35,9 @@ const AssetsPage: React.FC<Props> = () => {
   }
 
   return (
-    <div className={styles["assets"]}>
+    <div className={styles["assets-page"]}>
       <h1>{user?.username}</h1>
-      {assets &&
-        assets.map((asset) => (
-          <div key={asset._id}>
-            <AssetCard asset={asset} />
-          </div>
-        ))}
+      {assets && <AssetTable assets={assets} />}
       <Link href={"/"}>
         <Button htmlType={"button"} type={"primary"}>
           Back to home
