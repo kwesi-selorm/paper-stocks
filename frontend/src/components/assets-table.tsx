@@ -1,5 +1,5 @@
 import { Asset, AssetTableRecord } from "@/utils/types"
-import React from "react"
+import React, { useCallback } from "react"
 import styles from "../styles/components/AssetsTable.module.css"
 import { Table, Space } from "antd"
 import { formatToCurrencyString } from "@/utils/number-utils"
@@ -11,6 +11,8 @@ type Props = {
 }
 
 const AssetsTable: React.FC<Props> = ({ assets }) => {
+  const tableTitle = useCallback(() => <h1>Portfolio</h1>, [])
+
   const data: AssetTableRecord[] = assets.map((a) => ({
     ...a,
     averagePrice: formatToCurrencyString(a.averagePrice),
@@ -19,10 +21,9 @@ const AssetsTable: React.FC<Props> = ({ assets }) => {
 
   const columns: ColumnsType<AssetTableRecord> = [
     {
-      title: "Stock",
+      title: `Assets (${assets.length})`,
       dataIndex: "name",
-      key: "name",
-      render: (text: string) => <b>{text}</b>
+      key: "name"
     },
     {
       title: "Position",
@@ -47,12 +48,12 @@ const AssetsTable: React.FC<Props> = ({ assets }) => {
   return (
     <Table
       className={styles["assets-table"]}
-      dataSource={data}
       columns={columns}
-      size={"middle"}
+      dataSource={data}
       pagination={false}
       rowKey={(record) => record._id}
-      footer={() => "Footer"}
+      size={"large"}
+      title={tableTitle}
     />
   )
 }

@@ -17,7 +17,10 @@ type ItemProps = {
 const RowItem: React.FC<ItemProps> = ({ text, value }) => {
   return (
     <div>
-      <b>{text}</b>: {value}
+      {text}:{" "}
+      <b style={{ backgroundColor: "#000", color: "#fff", padding: "5px" }}>
+        {value}
+      </b>
     </div>
   )
 }
@@ -35,7 +38,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
       />
       <Divider type="vertical" />
       <RowItem
-        text="Net Assets"
+        text="Net Asset Value"
         value={formatToCurrencyString(netAssetValue)}
       />
     </section>
