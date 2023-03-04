@@ -29,5 +29,10 @@
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "prettier": "^2.8.4"
+  },
+  "overrides": {
+    "@antv/g2": "4.2.8",
+    "@antv/g-base": "0.5.11",
+    "@antv/path-util": "2.0.15"
   }
 }

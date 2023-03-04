@@ -41,8 +41,12 @@ const AssetsPage: React.FC<Props> = () => {
     <div className={styles["assets-page"]}>
       <h1 className={styles["username"]}>{user?.username}</h1>
       {assets && user && <CashDetails assets={assets} user={user} />}
-      {assets.length != 0 ? <AssetsGraph assets={assets} /> : null}
-      {assets.length != 0 ? <AssetsTable assets={assets} /> : <BuyFirstAsset />}
+      {assets && assets.length != 0 ? <AssetsGraph assets={assets} /> : null}
+      {assets && assets.length != 0 ? (
+        <AssetsTable assets={assets} />
+      ) : (
+        <BuyFirstAsset />
+      )}
       <Link href={"/"}>
         <Button htmlType={"button"} type={"primary"} size={"large"}>
           Back to home
