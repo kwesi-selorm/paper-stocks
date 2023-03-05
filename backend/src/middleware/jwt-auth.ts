@@ -5,8 +5,27 @@ import User from '../models/user'
 import { verifyPassword } from '../helpers/password-helper'
 dotenv.config()
 
-function generateToken(req: Request, res: Response, next: NextFunction) {
+async function generateToken(req: Request, res: Response, next: NextFunction) {
   const user = req.body
+
+  const userRecord = await User.findOne({ username: user.username })
+  if (userRecord == null) {
+    return res.status(401).json({
+      message: 'Registered user not found'
+    })
+  }
+
+  const isAuthorized = verifyPassword(
+    user.password,
+    userRecord.passwordSalt,
+    userRecord.passwordHash
+  )
+  if (!isAuthorized) {
+    return res.status(401).json({
+      message: 'Unauthorized: Invalid username or password'
+    })
+  }
+
   const secret = process.env.JWT_SECRET
   if (secret === undefined) {
     throw new Error('JWT_SECRET is required for authentication')
