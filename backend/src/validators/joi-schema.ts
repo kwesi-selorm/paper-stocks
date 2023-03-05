@@ -11,7 +11,8 @@ export const buyAssetInputSchema = joi.object({
 
 export const signInInputSchema = joi.object({
   username: joi.string().required(),
-  password: joi.string().min(8).required()
+  password: joi.string().min(8).required(),
+  token: joi.string().required()
 })
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/
@@ -23,7 +24,8 @@ export const signUpInputSchema = joi.object({
       'The password must have at least: one uppercase letter, one lowercase letter, one number, and one special character'
   }),
   confirmPassword: joi.ref('password'),
-  passwordClue: joi.string()
+  passwordClue: joi.string(),
+  token: joi.string().required()
 })
 
 export const userIdParamSchema = joi.object({
