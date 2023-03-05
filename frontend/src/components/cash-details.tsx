@@ -17,10 +17,7 @@ type ItemProps = {
 const RowItem: React.FC<ItemProps> = ({ text, value }) => {
   return (
     <div>
-      {text}:{" "}
-      <b style={{ backgroundColor: "#000", color: "#fff", padding: "5px" }}>
-        {value}
-      </b>
+      {text}: <b className={styles["value"]}>{value}</b>
     </div>
   )
 }

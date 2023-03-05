@@ -8,3 +8,9 @@
   padding-block: 1.2em;
   width: 60%;
 }
+
+.value {
+  background-color: #1890ff;
+  color: #fff;
+  padding: 5px;
+}
