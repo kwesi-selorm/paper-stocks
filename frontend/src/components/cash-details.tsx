@@ -42,8 +42,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
         Net Asset Value:{" "}
         <b className={styles["value"]}>
           {formatToCurrencyString(netAssetValue)}
-        </b>
-        (
+        </b>{" "}
         <b
           className={
             styles[`${returnSign === "positive" ? "positive" : "negative"}`]
@@ -54,7 +53,6 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
             .toString()}`}
           %
         </b>
-        )
       </div>
     </section>
   )
