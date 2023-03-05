@@ -22,8 +22,10 @@ export async function getAssets(userId: string, token: string) {
     }
   } catch (error: any) {
     if (error.response) {
-      message.error("Error fetching assets: " + error?.response?.data.message)
+      return message.error(
+        "Error fetching assets: " + error?.response?.data.message
+      )
     }
-    message.error(error.message)
+    return message.error(error.message)
   }
 }

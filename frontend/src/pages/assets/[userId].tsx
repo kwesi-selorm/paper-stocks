@@ -53,8 +53,8 @@ const AssetsPage: React.FC<Props> = () => {
       </h1>
       {assets && user && <CashDetails assets={assets} user={user} />}
       <Divider />
-      {assets && assets.length != 0 ? <AssetsGraph assets={assets} /> : null}
-      {assets && assets.length != 0 ? (
+      {assets ? <AssetsGraph assets={assets} /> : null}
+      {assets ? (
         <AssetsTable
           assets={assets}
           setModalOpen={setModalOpen}
