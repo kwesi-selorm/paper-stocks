@@ -1,12 +1,8 @@
 import { ValidationError } from 'joi'
-import { Request, Response, NextFunction } from 'express'
+import { Request } from 'express'
 import { buyAssetInputSchema, userIdParamSchema } from '../joi-schema'
 
-export default function validateBuyAssetInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export default function validateBuyAssetInput(req: Request) {
   const { error: bodyError } = buyAssetInputSchema.validate(req.body, {
     abortEarly: false
   })
@@ -22,7 +18,6 @@ export default function validateBuyAssetInput(
     if (paramsError) {
       errorMessages += paramsError.details.map((e) => e.message).join(', ')
     }
-    return res.status(400).json({ message: errorMessages })
+    return errorMessages
   }
-  return next()
 }

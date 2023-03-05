@@ -3,8 +3,13 @@ import UserModel from '../../models/user'
 import nasdaqStocks from '../../../assets/nasdaq-listed-stocks'
 import AssetModel from '../../models/asset'
 import { findNewPositionAndAverage } from '../../helpers/asset-calculations'
+import validateBuyAssetInput from '../../validators/users/buy-asset-validator'
 
 async function buyAsset(req: Request, res: Response) {
+  const errors = validateBuyAssetInput(req)
+  if (errors) {
+    return res.status(400).json({ message: errors })
+  }
   const { name, symbol, position, lastPrice } = req.body
   const { userId } = req.params
 

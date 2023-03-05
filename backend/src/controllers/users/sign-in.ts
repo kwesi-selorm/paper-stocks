@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import UserModel from '../../models/user'
-import validateSignInInput from '../../middleware/validators/users/signin-validator'
+import validateSignInInput from '../../validators/users/signin-validator'
 
 async function signIn(req: Request, res: Response) {
   const errors = validateSignInInput(req)
