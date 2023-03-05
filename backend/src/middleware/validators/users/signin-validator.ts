@@ -1,13 +1,10 @@
-import { NextFunction, Request, Response } from 'express'
-import { handleSchemaErrors } from '../handle-schema-errors'
+import { Request } from 'express'
 import { signInInputSchema } from '../joi-schema'
+import { ValidationError } from 'joi'
 
-export default function validateSignInInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export default function validateSignInInput(req: Request) {
   const { error } = signInInputSchema.validate(req.body)
-  handleSchemaErrors(error, res)
-  return next()
+  if (error instanceof ValidationError) {
+    return error.details.map((e) => e.message).join(', ')
+  }
 }

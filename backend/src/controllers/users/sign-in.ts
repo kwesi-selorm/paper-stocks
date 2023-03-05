@@ -1,7 +1,12 @@
 import { Request, Response } from 'express'
 import UserModel from '../../models/user'
+import validateSignInInput from '../../middleware/validators/users/signin-validator'
 
 async function signIn(req: Request, res: Response) {
+  const errors = validateSignInInput(req)
+  if (errors) {
+    return res.status(400).json({ message: errors })
+  }
   const { username } = req.body
   const token = req.body.token
   const userDocument = await UserModel.findOne({ username })
@@ -10,14 +15,12 @@ async function signIn(req: Request, res: Response) {
     return res.status(404).json({ message: 'User not found' })
   }
 
-  res
-    .status(200)
-    .json({
-      id: userDocument._id,
-      username: userDocument.username,
-      token,
-      buyingPower: userDocument.buyingPower
-    })
+  return res.status(200).json({
+    id: userDocument._id,
+    username: userDocument.username,
+    token,
+    buyingPower: userDocument.buyingPower
+  })
 }
 
 export default signIn
