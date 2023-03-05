@@ -8,10 +8,16 @@ import { ColumnsType } from "antd/es/table"
 
 type Props = {
   assets: Asset[]
+  setModalOpen: (modalOpen: boolean) => void
+  setTransactionType: (transactionType: string) => void
 }
 
-const AssetsTable: React.FC<Props> = ({ assets }) => {
-  const tableTitle = useCallback(() => <h1>Portfolio</h1>, [])
+const AssetsTable: React.FC<Props> = ({
+  assets,
+  setModalOpen,
+  setTransactionType
+}) => {
+  const tableTitle = useCallback(() => <h3>Portfolio</h3>, [])
 
   const data: AssetTableRecord[] = assets.map((a) => ({
     ...a,
@@ -38,12 +44,25 @@ const AssetsTable: React.FC<Props> = ({ assets }) => {
       key: "action",
       render: () => (
         <Space size="middle">
-          <Link href="">Buy</Link>
-          <Link href="">Sell</Link>
+          <Link href="#" onClick={handleBuy}>
+            Buy
+          </Link>
+          <Link href="#" onClick={handleSell}>
+            Sell
+          </Link>
         </Space>
       )
     }
   ]
+
+  const handleBuy = () => {
+    setTransactionType("buy")
+    setModalOpen(true)
+  }
+  const handleSell = () => {
+    setTransactionType("sell")
+    setModalOpen(true)
+  }
 
   return (
     <Table
