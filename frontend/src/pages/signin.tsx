@@ -15,14 +15,15 @@ const initialState = {
 export const SignInPage: React.FC = () => {
   const [input, setInput] = useState<SignInInput>(initialState)
   const [user, setUser] = useState<{ name: string; id: string } | null>(null)
+  const [isError, setIsError] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    if (user != null) {
+    if (user != null && !isError) {
       router.push(`/assets/${user.id}`).then()
       message.success("Logged in successfully").then()
     }
-  }, [router, user])
+  }, [isError, user])
 
   async function handleSubmit() {
     try {
@@ -31,11 +32,17 @@ export const SignInPage: React.FC = () => {
       setUser(data)
       window.localStorage.setItem("user", JSON.stringify(data))
     } catch (error: any) {
+      setIsError(true)
       if (error?.response?.status === 401) {
         return message.error("Invalid username or password")
       }
       return message.error(error?.response?.data?.message)
     }
+    setIsError(false)
+  }
+
+  if (isError) {
+    router.push("/signin").then()
   }
 
   return (

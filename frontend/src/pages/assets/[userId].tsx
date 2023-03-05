@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
-import { Button, Divider, Spin } from "antd"
+import { Button, Divider, message, Spin } from "antd"
 import { Asset, LoggedInUser } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -21,6 +21,7 @@ let user: LoggedInUser
 const AssetsPage: React.FC<Props> = () => {
   const [assets, setAssets] = useState<Asset[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
   const [modalOpen, setModalOpen] = React.useState(false)
   const [transactionType, setTransactionType] = React.useState("")
   const router = useRouter()
@@ -32,13 +33,37 @@ const AssetsPage: React.FC<Props> = () => {
     user = JSON.parse(userStr)
     if (user) {
       setIsLoading(true)
-      getAssets(id, user.token).then((data) => setAssets(data))
+      handleFetchAssets().then()
       setIsLoading(false)
     }
   }, [id])
 
+  async function handleFetchAssets() {
+    try {
+      const response = await getAssets(id, user.token)
+      if (response === undefined) {
+        return
+      }
+      const data = await response.data
+      setAssets(data)
+    } catch (e: any) {
+      setIsError(true)
+      message.error(e?.response?.data?.message)
+      setIsError(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    window.localStorage.removeItem("user")
+    message.success("You have been signed out successfully")
+  }
+
   if (isLoading) {
     return <Spin size={"large"} />
+  }
+
+  if (isError) {
+    router.push("/signin").then()
   }
 
   return (
@@ -63,9 +88,9 @@ const AssetsPage: React.FC<Props> = () => {
       ) : (
         <BuyFirstAsset />
       )}
-      <Link href={"/"}>
+      <Link href={"/signin"} onClick={handleSignOut}>
         <Button htmlType={"button"} type={"primary"} size={"large"}>
-          Back to home
+          Sign out
         </Button>
       </Link>
     </div>
