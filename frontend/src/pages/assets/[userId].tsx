@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
-import { Button, Spin } from "antd"
+import { Button, Divider, Spin } from "antd"
 import { Asset, LoggedInUser } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -9,6 +9,8 @@ import AssetsTable from "@/components/assets-table"
 import CashDetails from "@/components/cash-details"
 import AssetsGraph from "@/components/assets-graph"
 import BuyFirstAsset from "@/components/buy-first-asset"
+import BuySellAssetModal from "@/components/buy-sell-asset-modal"
+import { capitalizeEachWord } from "@/utils/word-utils"
 
 type Props = {
   user: LoggedInUser
@@ -19,6 +21,8 @@ let user: LoggedInUser
 const AssetsPage: React.FC<Props> = () => {
   const [assets, setAssets] = useState<Asset[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const [transactionType, setTransactionType] = React.useState("")
   const router = useRouter()
   const { userId } = router.query
   const id = userId as string
@@ -39,11 +43,23 @@ const AssetsPage: React.FC<Props> = () => {
 
   return (
     <div className={styles["assets-page"]}>
-      <h1 className={styles["username"]}>{user?.username}</h1>
+      <BuySellAssetModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        transactionType={transactionType}
+      />
+      <h1 className={styles["username"]}>
+        {user && capitalizeEachWord(user.username)}
+      </h1>
       {assets && user && <CashDetails assets={assets} user={user} />}
+      <Divider />
       {assets && assets.length != 0 ? <AssetsGraph assets={assets} /> : null}
       {assets && assets.length != 0 ? (
-        <AssetsTable assets={assets} />
+        <AssetsTable
+          assets={assets}
+          setModalOpen={setModalOpen}
+          setTransactionType={setTransactionType}
+        />
       ) : (
         <BuyFirstAsset />
       )}
