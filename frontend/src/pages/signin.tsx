@@ -31,8 +31,12 @@ export const SignInPage: React.FC = () => {
       setUser(data)
       window.localStorage.setItem("user", JSON.stringify(data))
     } catch (error: any) {
+      console.log(error)
       if (error?.response?.status === 401) {
         message.error("Invalid username or password")
+      }
+      if (error?.response?.status === 400) {
+        message.error(error?.response?.data?.message)
       }
       message.error(error.message)
     }
