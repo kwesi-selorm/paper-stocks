@@ -1,9 +1,17 @@
 import "@/styles/globals.css"
 import type { AppProps } from "next/app"
 import React from "react"
+import UserContextProvider from "@/contexts/user-context/UserContextProvider"
+import { QueryClient, QueryClientProvider } from "react-query"
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [user, setUser] = React.useState(null)
+  const queryClient = new QueryClient()
 
-  return <Component {...pageProps} user={user} setUser={setUser} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UserContextProvider>
+        <Component {...pageProps} />
+      </UserContextProvider>
+    </QueryClientProvider>
+  )
 }
