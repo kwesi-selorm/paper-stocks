@@ -11,6 +11,7 @@ export interface IUser {
 }
 
 const userSchema: Schema = new Schema<IUser>({
+  id: Schema.Types.ObjectId,
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
