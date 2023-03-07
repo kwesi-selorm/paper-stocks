@@ -14,5 +14,6 @@ export async function getAssets(userId: string, token: string) {
     }
   }
 
-  return await axios.request(axiosConfig)
+  const res = await axios.request(axiosConfig)
+  return await res.data
 }
