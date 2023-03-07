@@ -1,5 +1,5 @@
-import { Form, message, Modal, Select } from "antd"
-import React, { useEffect, useState } from "react"
+import { Form, message, Modal, Select, Spin } from "antd"
+import React, { useState } from "react"
 import getListedStocks from "@/api/get-listed-stocks"
 import { ListedStock } from "@/utils/types"
 import { useQuery } from "react-query"
@@ -21,12 +21,14 @@ const BuySellAssetModal: React.FC<ModalProps> = ({
   transactionType
 }) => {
   const [listedStocks, setListedStocks] = useState<Array<ListedStock>>([])
-  const { data, error, isLoading, isError } = useQuery(
+  const { error, isLoading, isError } = useQuery(
     ["listedStocks"],
     getListedStocks,
     {
       retry: false,
       retryOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
       onSuccess: (data) => {
         if (data) {
           setListedStocks(data.listedStocks)
@@ -40,7 +42,7 @@ const BuySellAssetModal: React.FC<ModalProps> = ({
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Spin />
   }
 
   if (isError) {
@@ -70,25 +72,24 @@ const BuySellAssetModal: React.FC<ModalProps> = ({
 }
 
 const ModalContent: React.FC<ContentProps> = ({ listedStocks }) => {
-  function convertListedStocksToOptions(listedStocks: ListedStock[]) {
-    if (!listedStocks) return []
-    return listedStocks?.map((listedStock) => {
-      return {
-        value: listedStock.symbol,
-        label: listedStock.name
-      }
-    })
-  }
+  const stockOptions = listedStocks.map((listedStock) => {
+    return {
+      value: listedStock.symbol,
+      label: listedStock.name
+    }
+  })
 
   return (
     <Form>
       <Select
         allowClear
         bordered
-        defaultValue={convertListedStocksToOptions(listedStocks)[0].label}
-        options={convertListedStocksToOptions(listedStocks)}
+        placeholder="Select a stock"
+        options={stockOptions}
+        filterOption={(input, option) =>
+          (option?.label.toLowerCase() ?? "").includes(input.toLowerCase())
+        }
         showSearch
-        size="small"
         style={{ width: 250 }}
       />
     </Form>
