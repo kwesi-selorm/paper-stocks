@@ -31,3 +31,7 @@ export const signUpInputSchema = joi.object({
 export const userIdParamSchema = joi.object({
   userId: joi.string().required()
 })
+
+export const getStockPriceInputSchema = joi.object({
+  tickers: joi.array().items(joi.string())
+})

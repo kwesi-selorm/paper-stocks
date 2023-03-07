@@ -1,23 +1,21 @@
-import joi, { ValidationError } from 'joi'
-import { Request, Response, NextFunction } from 'express'
-import { GetStockPriceInput } from '../../utils/types'
+import { ValidationError } from 'joi'
+import { Request } from 'express'
+import { getStockPriceInputSchema, userIdParamSchema } from '../joi-schema'
 
-const schema = joi.object({
-  symbol: joi.string().required()
-})
-
-export default function validateGetStockPriceInput(
-  req: Request<GetStockPriceInput>,
-  res: Response,
-  next: NextFunction
-) {
-  const { error } = schema.validate(req.params)
-  if (error) {
-    if (error instanceof ValidationError) {
-      const errorMessages = error.details.map((e) => e.message).join(', ')
-      return res.status(400).json({ Error: errorMessages })
+export default function validateGetStockPriceInput(req: Request) {
+  const { error: paramsError } = userIdParamSchema.validate(req.params)
+  const { error: bodyError } = getStockPriceInputSchema.validate(req.body)
+  let errorMessages = ''
+  if (
+    paramsError instanceof ValidationError ||
+    bodyError instanceof ValidationError
+  ) {
+    if (bodyError) {
+      errorMessages += bodyError.details.map((e) => e.message).join(', ')
     }
-    throw new Error('Request input validation failed')
+    if (paramsError) {
+      errorMessages += paramsError.details.map((e) => e.message).join(', ')
+    }
+    return errorMessages
   }
-  next()
 }
