@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Button, Form, Input, message } from "antd"
 import { SignInInput } from "@/utils/types"
 import signIn from "../api/signin"
@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import styles from "../styles/pages/SignIn.module.css"
 import Link from "next/link"
 import ButtonsRow from "@/components/buttons-row"
+import UserContext from "@/contexts/user-context/user-context"
 
 const initialState = {
   username: "",
@@ -14,12 +15,14 @@ const initialState = {
 
 export const SignInPage: React.FC = () => {
   const [input, setInput] = useState<SignInInput>(initialState)
-  const [user, setUser] = useState<{ name: string; id: string } | null>(null)
+  const { user, setUser } = useContext(UserContext)
   const [isError, setIsError] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     if (user != null && !isError) {
+      setUser(user)
+      localStorage.setItem("user", JSON.stringify(user))
       router.push(`/assets/${user.id}`).then()
       message.success("Logged in successfully").then()
     }
