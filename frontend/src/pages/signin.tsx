@@ -49,7 +49,7 @@ export const SignInPage: React.FC = () => {
   }
 
   return (
-    <Form className={styles["form"]}>
+    <Form className={styles["form"]} colon={false}>
       <Form.Item
         label="Username"
         name="username"
