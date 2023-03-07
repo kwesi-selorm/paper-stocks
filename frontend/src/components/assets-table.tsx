@@ -18,13 +18,11 @@ const AssetsTable: React.FC<Props> = ({
   setTransactionType
 }) => {
   const tableTitle = useCallback(() => <h3>Portfolio</h3>, [])
-
-  const data: AssetTableRecord[] = assets.map((a) => ({
+  const tableData: AssetTableRecord[] = assets.map((a) => ({
     ...a,
     averagePrice: formatToCurrencyString(a.averagePrice),
     value: formatToCurrencyString(a.position * a.averagePrice)
   }))
-
   const columns: ColumnsType<AssetTableRecord> = [
     {
       title: `Assets (${assets.length})`,
@@ -55,11 +53,11 @@ const AssetsTable: React.FC<Props> = ({
     }
   ]
 
-  const handleBuy = () => {
+  async function handleBuy() {
     setTransactionType("buy")
     setModalOpen(true)
   }
-  const handleSell = () => {
+  function handleSell() {
     setTransactionType("sell")
     setModalOpen(true)
   }
@@ -68,7 +66,7 @@ const AssetsTable: React.FC<Props> = ({
     <Table
       className={styles["assets-table"]}
       columns={columns}
-      dataSource={data}
+      dataSource={tableData}
       pagination={false}
       rowKey={(record) => record._id}
       size={"large"}
