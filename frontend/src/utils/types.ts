@@ -26,6 +26,16 @@ export type LoggedInUser = {
   buyingPower: number
 }
 
+export type ListedStock = {
+  symbol: string
+  name: string
+  currency: string
+  exchange: string
+  mic_code: string
+  country: string
+  type: string
+}
+
 export type SignInInput = {
   username: string
   password: string
