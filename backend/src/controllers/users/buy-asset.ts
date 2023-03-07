@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import UserModel from '../../models/user'
-import nasdaqStocks from '../../../assets/nasdaq-listed-stocks'
+import nasdaqStocks from '../../../assets/stocks-list'
 import AssetModel from '../../models/asset'
 import { findNewPositionAndAverage } from '../../helpers/asset-calculations'
 import validateBuyAssetInput from '../../validators/users/buy-asset-validator'
