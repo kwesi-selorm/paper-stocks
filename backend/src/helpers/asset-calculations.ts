@@ -1,11 +1,11 @@
-export function findNewPositionAndAverage(
+export function calculatePositionAndAverage(
   currentPosition: number,
-  currentAverage: number,
+  currentAmountInvested: number,
   newPosition: number,
-  lastPrice: number
+  newAmountInvested: number
 ) {
   const totalPosition = currentPosition + newPosition
-  const newAverage =
-    (currentPosition * currentAverage + newPosition * lastPrice) / totalPosition
-  return { totalPosition, newAverage }
+  const totalAmountInvested = currentAmountInvested + newAmountInvested
+  const averagePrice = totalAmountInvested / totalPosition
+  return { totalPosition, averagePrice }
 }
