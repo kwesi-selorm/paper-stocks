@@ -8,7 +8,7 @@ export const buyAssetInputSchema = joi.object({
   name: joi.string().required(),
   symbol: joi.string().required(),
   position: joi.number().required(),
-  lastPrice: joi.number().required()
+  amountInvested: joi.number().required()
 })
 
 export const signInInputSchema = joi.object({
