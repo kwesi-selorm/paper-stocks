@@ -5,7 +5,7 @@ import signIn from "../api/signin"
 import { useRouter } from "next/router"
 import styles from "../styles/pages/SignIn.module.css"
 import Link from "next/link"
-import ButtonsRow from "@/components/buttons-row"
+import ButtonsRow from "@/components/ButtonsRow"
 import UserContext from "@/contexts/user-context/user-context"
 
 const initialState = {

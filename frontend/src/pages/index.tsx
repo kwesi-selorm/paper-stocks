@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className={styles["main"]}>
       <h1>Paper Stocks</h1>
-      <Link href="/signin">
+      <Link href="/SignIn">
         <Button type={"primary"} size={"large"}>
           Sign in
         </Button>
