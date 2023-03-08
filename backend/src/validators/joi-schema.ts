@@ -24,7 +24,8 @@ export const signUpInputSchema = joi.object({
       'The password must have at least: one uppercase letter, one lowercase letter, one number, and one special character'
   }),
   confirmPassword: joi.ref('password'),
-  passwordClue: joi.string()
+  passwordClue: joi.string().optional(),
+  token: joi.string()
 })
 
 export const userIdParamSchema = joi.object({
