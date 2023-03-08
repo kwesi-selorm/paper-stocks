@@ -13,7 +13,7 @@ async function buyAsset(req: Request, res: Response) {
   const { name, symbol, position, lastPrice } = req.body
   const { userId } = req.params
 
-  const userDocument = await UserModel.findById(userId)
+  const userDocument = await UserModel.findById(userId).exec()
   if (userDocument == null) {
     return res.status(404).json({
       message: `User with id '${userId}' not found`
@@ -26,7 +26,7 @@ async function buyAsset(req: Request, res: Response) {
     })
   }
 
-  const alreadyOwnedAsset = await AssetModel.findOne({ userId, symbol })
+  const alreadyOwnedAsset = await AssetModel.findOne({ userId, symbol }).exec()
   if (alreadyOwnedAsset !== null) {
     const { totalPosition, newAverage } = findNewPositionAndAverage(
       alreadyOwnedAsset.position,
@@ -38,9 +38,12 @@ async function buyAsset(req: Request, res: Response) {
       await AssetModel.updateOne(
         { userId, symbol },
         { position: totalPosition, averagePrice: newAverage }
-      )
+      ).exec()
       const buyingPower = userDocument.buyingPower - position * lastPrice
-      await UserModel.updateOne({ _id: userId }, { buyingPower: buyingPower })
+      await UserModel.updateOne(
+        { _id: userId },
+        { buyingPower: buyingPower }
+      ).exec()
       userDocument.buyingPower -= lastPrice * position
       return res.status(200).json({ name, symbol, totalPosition, newAverage })
     } catch (e) {
