@@ -1,16 +1,16 @@
 import { Request, Response } from 'express'
 import UserModel from '../../models/user'
-import nasdaqStocks from '../../../assets/stocks-list'
 import AssetModel from '../../models/asset'
-import { findNewPositionAndAverage } from '../../helpers/asset-calculations'
+import { findPositionAndAverageOnBuy } from '../../helpers/asset-calculations'
 import validateBuyAssetInput from '../../validators/users/buy-asset-validator'
+import verifySymbol from '../../helpers/verify-symbol'
 
 async function buyAsset(req: Request, res: Response) {
   const errors = validateBuyAssetInput(req)
   if (errors) {
     return res.status(400).json({ message: errors })
   }
-  const { name, symbol, position, lastPrice } = req.body
+  const { name, symbol, position, amountInvested } = req.body
   const { userId } = req.params
 
   const userDocument = await UserModel.findById(userId).exec()
@@ -19,8 +19,8 @@ async function buyAsset(req: Request, res: Response) {
       message: `User with id '${userId}' not found`
     })
   }
-  const validSymbol = nasdaqStocks.find((stock) => stock.symbol === symbol)
-  if (validSymbol === undefined) {
+  const validSymbol = verifySymbol(symbol)
+  if (!validSymbol) {
     return res.status(404).json({
       message: `${symbol} is not a valid Nasdaq-listed stock ticker`
     })
@@ -28,24 +28,20 @@ async function buyAsset(req: Request, res: Response) {
 
   const alreadyOwnedAsset = await AssetModel.findOne({ userId, symbol }).exec()
   if (alreadyOwnedAsset !== null) {
-    const { totalPosition, newAverage } = findNewPositionAndAverage(
+    const { totalPosition, averagePrice } = findPositionAndAverageOnBuy(
       alreadyOwnedAsset.position,
-      alreadyOwnedAsset.averagePrice,
+      alreadyOwnedAsset.amountInvested,
       position,
-      lastPrice
+      amountInvested
     )
+    const buyingPower = userDocument.buyingPower - amountInvested
     try {
       await AssetModel.updateOne(
         { userId, symbol },
-        { position: totalPosition, averagePrice: newAverage }
+        { position: totalPosition, averagePrice }
       ).exec()
-      const buyingPower = userDocument.buyingPower - position * lastPrice
-      await UserModel.updateOne(
-        { _id: userId },
-        { buyingPower: buyingPower }
-      ).exec()
-      userDocument.buyingPower -= lastPrice * position
-      return res.status(200).json({ name, symbol, totalPosition, newAverage })
+      await UserModel.updateOne({ _id: userId }, { buyingPower }).exec()
+      return res.status(200).json({ symbol, totalPosition })
     } catch (e) {
       return res
         .status(500)
@@ -55,14 +51,15 @@ async function buyAsset(req: Request, res: Response) {
 
   try {
     const assetDocument = new AssetModel({
-      name,
       symbol,
+      name,
       position,
-      averagePrice: lastPrice,
+      amountInvested,
+      averagePrice: amountInvested / position,
       userId
     })
     await assetDocument.save()
-    res.status(200).json(assetDocument)
+    res.status(200).json({ symbol, position })
   } catch (e) {
     return res
       .status(500)
