@@ -84,7 +84,7 @@ const AssetsPage: React.FC = () => {
       ) : (
         <BuyFirstAsset />
       )}
-      <Link href={"/signin"} onClick={handleSignOut}>
+      <Link href={"/SignIn"} onClick={handleSignOut}>
         <Button htmlType={"button"} type={"primary"} size={"large"}>
           Sign out
         </Button>
