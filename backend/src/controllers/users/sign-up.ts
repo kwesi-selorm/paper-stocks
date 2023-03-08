@@ -19,17 +19,18 @@ async function signUp(req: Request, res: Response) {
   if (existingEmailUser != null) {
     return res
       .status(400)
-      .json({ Error: `A user with the email ${email} already exists` })
+      .json({ message: `A user with the email ${email} already exists` })
   }
   if (existingUsernameUser != null) {
     return res
       .status(400)
-      .json({ Error: `A user with the username ${username} already exists` })
+      .json({ message: `A user with the username ${username} already exists` })
   }
 
   const buyingPower = 100000
   const saveUserInput = {
-    ...req.body,
+    email,
+    username,
     passwordSalt,
     passwordClue,
     passwordHash,
