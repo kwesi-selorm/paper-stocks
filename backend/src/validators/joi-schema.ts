@@ -1,4 +1,6 @@
 import joi from 'joi'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 //TODO: Add a validator for the user id length in params
 
@@ -17,14 +19,15 @@ export const signInInputSchema = joi.object({
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/
 export const signUpInputSchema = joi.object({
-  email: joi.string().email().required(),
+  // TODO: Find way to use .email() when node-env is prod and just string when dev
+  email: joi.string().required(),
   username: joi.string().required().min(3),
   password: joi.string().pattern(passwordRegex).min(8).required().messages({
     'string.pattern.base':
       'The password must have at least: one uppercase letter, one lowercase letter, one number, and one special character'
   }),
   confirmPassword: joi.ref('password'),
-  passwordClue: joi.string().optional(),
+  passwordClue: joi.string().allow('').optional(),
   token: joi.string()
 })
 
