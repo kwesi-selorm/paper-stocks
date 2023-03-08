@@ -19,8 +19,10 @@ export const signInInputSchema = joi.object({
 
 const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])(?=.{8,})/
 export const signUpInputSchema = joi.object({
-  // TODO: Find way to use .email() when node-env is prod and just string when dev
-  email: joi.string().required(),
+  email:
+    process.env.NODE_ENV === 'development'
+      ? joi.string().required()
+      : joi.string().email().required(),
   username: joi.string().required().min(3),
   password: joi.string().pattern(passwordRegex).min(8).required().messages({
     'string.pattern.base':
