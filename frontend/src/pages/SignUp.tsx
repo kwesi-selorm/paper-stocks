@@ -1,9 +1,11 @@
 import React, { useState } from "react"
 import { SignUpInput } from "@/utils/types"
-import { Button, Form, Input } from "antd"
+import { Button, Form, Input, message } from "antd"
 import ButtonsRow from "@/components/ButtonsRow"
 import Link from "next/link"
 import styles from "../styles/pages/SignUp.module.css"
+import signUp from "@/api/signup"
+import { useRouter } from "next/router"
 
 const initialValues = {
   username: "",
@@ -15,12 +17,31 @@ const initialValues = {
 
 const SignUp: React.FC = () => {
   const [values, setValues] = useState<SignUpInput>(initialValues)
+  const [isError, setIsError] = useState(false)
+  const router = useRouter()
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
   ) {
     e.preventDefault()
-    console.log(e)
+    try {
+      await signUp(values)
+      message.success("Sign up successful, redirecting now to the signin page")
+      router.push("/SignIn").then()
+    } catch (error: any) {
+      console.error(error)
+      setIsError(true)
+      if (error?.response?.status === 400) {
+        return message.error(error?.response?.data?.message)
+      }
+      return message.error(error.message)
+    } finally {
+      setIsError(false)
+    }
+  }
+
+  if (isError) {
+    router.push("/signin").then()
   }
 
   return (
