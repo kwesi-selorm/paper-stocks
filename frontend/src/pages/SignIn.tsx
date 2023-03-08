@@ -80,7 +80,7 @@ export const SignInPage: React.FC = () => {
           Submit
         </Button>
         <Link href="/">
-          <Button htmlType="button" type="primary">
+          <Button danger htmlType="button" type="primary">
             Cancel
           </Button>
         </Link>

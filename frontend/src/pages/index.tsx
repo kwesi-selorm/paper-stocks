@@ -1,4 +1,4 @@
-import { Button } from "antd"
+import { Button, Space } from "antd"
 import Link from "next/link"
 import React from "react"
 import styles from "../styles/pages/Home.module.css"
@@ -12,6 +12,13 @@ export default function Home() {
           Sign in
         </Button>
       </Link>
+      <Space />
+      <div>
+        New to Paper Stocks?{"\t"}
+        <Link href="/SignUp">
+          <Button type="primary">Sign up</Button>
+        </Link>
+      </div>
     </div>
   )
 }
