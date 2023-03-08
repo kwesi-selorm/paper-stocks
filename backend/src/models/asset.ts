@@ -5,6 +5,7 @@ export interface IAsset {
   symbol: string
   name: string
   position: number
+  amountInvested: number
   averagePrice: number
   userId: string
 }
@@ -14,6 +15,7 @@ const assetSchema: Schema = new Schema<IAsset>({
   symbol: { type: String, required: true },
   name: { type: String, required: true },
   position: { type: Number, required: true },
+  amountInvested: { type: Number, required: true },
   averagePrice: { type: Number, required: true },
   userId: { type: String, required: true }
 })
