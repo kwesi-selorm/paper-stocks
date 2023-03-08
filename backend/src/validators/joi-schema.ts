@@ -11,6 +11,12 @@ export const buyAssetInputSchema = joi.object({
   amountInvested: joi.number().required()
 })
 
+export const sellAssetInputSchema = joi.object({
+  symbol: joi.string().required(),
+  positionsSold: joi.number().required(),
+  unitPrice: joi.number().required()
+})
+
 export const signInInputSchema = joi.object({
   username: joi.string().required(),
   password: joi.string().min(8).required(),

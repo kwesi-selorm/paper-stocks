@@ -36,7 +36,6 @@ export type UserDocument = {
   passwordSalt: string
   passwordClue: string
   buyingPower: number
-  _v: number
 }
 
 export type StockPrice = {
