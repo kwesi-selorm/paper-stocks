@@ -6,24 +6,21 @@ import { formatToCurrencyString } from "@/utils/number-utils"
 import Link from "next/link"
 import { ColumnsType } from "antd/es/table"
 import ModalContext from "@/contexts/modal-context/modal-context"
-import BuyNewStockModal from "@/components/modals/BuyNewStockModal"
-import SellAssetModal from "@/components/modals/SellAssetModal"
-import BuyAssetModal from "@/components/modals/BuyAssetModal"
 import ReloadButton from "@/components/ReloadButton"
 
 type Props = {
   assets: Asset[]
-  reload: () => void
+  refetch: () => void
 }
 
-const AssetsTable: React.FC<Props> = ({ assets, reload }) => {
-  const { modalId, setModalId, setOpen } = useContext(ModalContext)
+const AssetsTable: React.FC<Props> = ({ assets, refetch }) => {
+  const { setModalId, setOpen } = useContext(ModalContext)
 
   const tableTitle = useCallback(() => {
     return (
       <div>
         <h2>Portfolio</h2>
-        <ReloadButton function={reload} />
+        <ReloadButton function={refetch} />
       </div>
     )
   }, [])
@@ -63,22 +60,8 @@ const AssetsTable: React.FC<Props> = ({ assets, reload }) => {
     setModalId("buy-new-stock")
   }
 
-  function renderModal() {
-    switch (modalId) {
-      case "buy-new-stock":
-        return <BuyNewStockModal />
-      case "buy-asset":
-        return <BuyAssetModal />
-      case "sell-asset":
-        return <SellAssetModal />
-      default:
-        return null
-    }
-  }
-
   return (
     <>
-      {renderModal()}
       <Button htmlType="button" onClick={handleBuy} size="large">
         Buy new stock
       </Button>

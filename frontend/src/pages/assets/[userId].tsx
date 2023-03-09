@@ -14,13 +14,19 @@ import { capitalizeEachWord } from "@/utils/word-utils"
 import UserContext from "@/contexts/user-context/user-context"
 import { useQuery } from "react-query"
 import { AxiosError } from "axios"
+import BuyNewStockModal from "@/components/modals/BuyNewStockModal"
+import BuyAssetModal from "@/components/modals/BuyAssetModal"
+import SellAssetModal from "@/components/modals/SellAssetModal"
+import ModalContext from "@/contexts/modal-context/modal-context"
 
 const AssetsPage: React.FC = () => {
   const router = useRouter()
   const { userId } = router.query
   const id = userId as string
   const { user, setUser, token, setToken } = useContext(UserContext)
+  const { modalId } = useContext(ModalContext)
 
+  // Assets
   const { data, error, isLoading, isError, refetch } = useQuery(
     ["assets", id, token],
     () => {
@@ -28,14 +34,13 @@ const AssetsPage: React.FC = () => {
       getAssets(id, token).then((data) => setAssets(data))
     },
     {
-      refetchOnWindowFocus: false,
       retry: false,
       retryOnMount: false
     }
   )
   const [assets, setAssets] = useState<Asset[]>([])
   const [modalOpen, setModalOpen] = React.useState(false)
-  const [transactionType, setTransactionType] = React.useState("")
+  const [transactionType] = React.useState("")
 
   useEffect(() => {
     const item = window.localStorage.getItem("user") as string
@@ -65,8 +70,24 @@ const AssetsPage: React.FC = () => {
     return <Spin />
   }
 
+  function renderModal() {
+    switch (modalId) {
+      case "buy-new-stock":
+        return <BuyNewStockModal refetch={refetch} />
+      case "buy-first-stock":
+        return <BuyNewStockModal refetch={refetch} />
+      case "buy-asset":
+        return <BuyAssetModal />
+      case "sell-asset":
+        return <SellAssetModal />
+      default:
+        return null
+    }
+  }
+
   return (
     <div className={styles["assets-page"]}>
+      {renderModal()}
       <BuySellAssetModal
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
@@ -77,9 +98,9 @@ const AssetsPage: React.FC = () => {
       </h1>
       {assets && user && <CashDetails assets={assets} user={user} />}
       <Divider />
-      {assets ? <AssetsGraph assets={assets} /> : null}
-      {assets ? (
-        <AssetsTable assets={assets} reload={refetch} />
+      {assets && assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
+      {assets && assets.length !== 0 ? (
+        <AssetsTable assets={assets} refetch={refetch} />
       ) : (
         <BuyFirstAsset />
       )}
