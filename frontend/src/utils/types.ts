@@ -22,7 +22,7 @@ export interface AssetTableRecord
 export type LoggedInUser = {
   id: string
   username: string
-  token: string
+  token?: string
   buyingPower: number
 }
 
