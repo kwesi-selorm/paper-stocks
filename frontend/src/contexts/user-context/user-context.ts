@@ -1,15 +1,21 @@
 import { LoggedInUser } from "@/utils/types"
-import React from "react"
+import React, { Dispatch, SetStateAction } from "react"
 
 type IUserContext = {
   user: LoggedInUser | null
-  setUser: (user: LoggedInUser | null) => void
+  setUser: Dispatch<SetStateAction<LoggedInUser | null>>
+  token: string | null
+  setToken: Dispatch<SetStateAction<string | null>>
 }
 
 const initialDefaultState: IUserContext = {
   user: null,
-  setUser: (user: LoggedInUser | null) => {
+  setUser: () => {
     console.log("New user set")
+  },
+  token: "",
+  setToken: () => {
+    console.log("New token set")
   }
 }
 
