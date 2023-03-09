@@ -53,7 +53,10 @@ const AssetsPage: React.FC = () => {
   }, [data])
 
   const handleSignOut = async () => {
-    message.success("You have been signed out successfully")
+    setTimeout(
+      () => message.success("You have been signed out successfully"),
+      1000
+    )
     setUser(null)
   }
 
