@@ -1,18 +1,29 @@
 import { Button } from "antd"
-import React from "react"
+import React, { useContext } from "react"
 import styles from "../styles/components/BuyFirstAsset.module.css"
+import ModalContext from "@/contexts/modal-context/modal-context"
 
 const BuyFirstAsset: React.FC = () => {
+  const { setModalId, setOpen } = useContext(ModalContext)
+
+  function handleBuyFirstAsset() {
+    setOpen(true)
+    setModalId("buy-first-stock")
+  }
+
   return (
     <section className={styles["prompt"]}>
       <p>
         No assets to display.
         <br /> Let&apos;s start by buying your first stock!
       </p>
+      <br />
       <Button
+        block
+        htmlType="button"
+        onClick={handleBuyFirstAsset}
+        style={{ width: "50%" }}
         type={"primary"}
-        size={"large"}
-        onClick={() => alert("show buy stock modal")}
       >
         Buy
       </Button>
