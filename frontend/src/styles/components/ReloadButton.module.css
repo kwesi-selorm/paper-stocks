@@ -1,0 +1,9 @@
+.reload-button {
+  transition: transform 0.5s ease-in-out;
+  font-weight: bold;
+}
+
+.reload-button:hover {
+  cursor: pointer;
+  transform: rotate(180deg);
+}
