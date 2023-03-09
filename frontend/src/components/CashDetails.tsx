@@ -22,7 +22,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
   const percentageReturn = findPercentageReturn(user.buyingPower, netAssetValue)
 
   useEffect(() => {
-    if (percentageReturn > 0) {
+    if (percentageReturn >= 0) {
       setReturnSign("positive")
     } else if (percentageReturn < 0) {
       setReturnSign("negative")
@@ -48,10 +48,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
             styles[`${returnSign === "positive" ? "positive" : "negative"}`]
           }
         >
-          {`${returnSign === "positive" ? "+" : "-"}${percentageReturn
-            .toFixed(1)
-            .toString()}`}
-          %
+          {`${percentageReturn.toFixed(1).toString()}`}%
         </b>
       </div>
     </section>
