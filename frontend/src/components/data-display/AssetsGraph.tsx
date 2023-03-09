@@ -3,7 +3,7 @@ import React from "react"
 import { Asset, AssetPlotData } from "@/utils/types"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import { Datum } from "@antv/g2plot"
-import styles from "../styles/components/AssetsGraph.module.css"
+import styles from "../../styles/components/AssetsGraph.module.css"
 import { Legend } from "@antv/component"
 
 type Props = {
