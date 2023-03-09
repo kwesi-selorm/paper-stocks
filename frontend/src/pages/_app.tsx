@@ -4,6 +4,7 @@ import React from "react"
 import UserContextProvider from "@/contexts/user-context/UserContextProvider"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
+import ModalContextProvider from "@/contexts/modal-context/ModalContextProvider"
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient()
@@ -11,7 +12,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <UserContextProvider>
-        <Component {...pageProps} />
+        <ModalContextProvider>
+          <Component {...pageProps} />
+        </ModalContextProvider>
       </UserContextProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
