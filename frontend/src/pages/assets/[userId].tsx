@@ -5,9 +5,9 @@ import { Asset } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
-import AssetsTable from "@/components/AssetsTable"
+import AssetsTable from "@/components/data-display/AssetsTable"
 import CashDetails from "@/components/CashDetails"
-import AssetsGraph from "@/components/AssetsGraph"
+import AssetsGraph from "@/components/data-display/AssetsGraph"
 import BuyFirstAsset from "@/components/BuyFirstAsset"
 import BuySellAssetModal from "@/components/BuySellAssetModal"
 import { capitalizeEachWord } from "@/utils/word-utils"
@@ -16,21 +16,24 @@ import { useQuery } from "react-query"
 import { AxiosError } from "axios"
 
 const AssetsPage: React.FC = () => {
-  const [token, setToken] = useState("")
   const router = useRouter()
   const { userId } = router.query
   const id = userId as string
+  const { user, setUser, token, setToken } = useContext(UserContext)
 
-  const { data, error, isLoading, isError } = useQuery(
+  const { data, error, isLoading, isError, refetch } = useQuery(
     ["assets", id, token],
-    () => getAssets(id, token),
+    () => {
+      if (!token) return
+      getAssets(id, token).then((data) => setAssets(data))
+    },
     {
+      refetchOnWindowFocus: false,
       retry: false,
       retryOnMount: false
     }
   )
   const [assets, setAssets] = useState<Asset[]>([])
-  const { user, setUser } = useContext(UserContext)
   const [modalOpen, setModalOpen] = React.useState(false)
   const [transactionType, setTransactionType] = React.useState("")
 
@@ -76,11 +79,7 @@ const AssetsPage: React.FC = () => {
       <Divider />
       {assets ? <AssetsGraph assets={assets} /> : null}
       {assets ? (
-        <AssetsTable
-          assets={assets}
-          setModalOpen={setModalOpen}
-          setTransactionType={setTransactionType}
-        />
+        <AssetsTable assets={assets} reload={refetch} />
       ) : (
         <BuyFirstAsset />
       )}
