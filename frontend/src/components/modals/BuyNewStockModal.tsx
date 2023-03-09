@@ -77,7 +77,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
 
   async function fetchStockPrice() {
     if (!values.symbol) return
-    getStockPrice(id, token, values.symbol).then((data) => {
+    getStockPrice(id, token, [values.symbol]).then((data) => {
       if (data) {
         setLastPrice(Number(data[0].price) ?? 0)
       }
@@ -160,7 +160,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
                 symbol: value,
                 name: (option as SelectOptionType).label
               })
-              getStockPrice(id, token, value).then((data) => {
+              getStockPrice(id, token, [value]).then((data) => {
                 if (data) {
                   setLastPrice(Number(data[0].price) ?? 0)
                 }

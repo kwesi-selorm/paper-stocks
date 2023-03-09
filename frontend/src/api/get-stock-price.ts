@@ -4,12 +4,12 @@ import axios from "axios"
 export default async function getStockPrice(
   userId: string,
   token: string | null,
-  symbol: string
+  symbol: string[]
 ) {
   if (!token) return
 
   const axiosConfig = {
-    data: { tickers: [symbol] },
+    data: { tickers: symbol },
     url: `${apiUrl}/stocks/stock-price/${userId}`,
     method: "POST",
     headers: {
