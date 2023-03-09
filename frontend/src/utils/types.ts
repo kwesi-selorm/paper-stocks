@@ -36,6 +36,13 @@ export type ListedStock = {
   type: string
 }
 
+export type NewStockInitialInputType = {
+  symbol: string
+  name: string
+  position: number
+  amountInvested: number
+}
+
 export type SignInInput = {
   username: string
   password: string
