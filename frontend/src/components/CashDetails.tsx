@@ -1,25 +1,54 @@
-import { Asset, LoggedInUser } from "@/utils/types"
+import { Asset, AssetTableRecord, LoggedInUser } from "@/utils/types"
 import React, { useEffect } from "react"
-import {
-  findPercentageReturn,
-  formatToCurrencyString
-} from "@/utils/number-utils"
+import { formatToCurrencyString } from "@/utils/number-utils"
 import styles from "../styles/components/CashDetails.module.css"
 import { Divider } from "antd"
 
 type RowProps = {
   assets: Asset[]
   user: LoggedInUser
+  setTableData: (tableData: AssetTableRecord[]) => void
 }
 
-const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
+const CashDetails: React.FC<RowProps> = ({ assets, user, setTableData }) => {
   const [returnSign, setReturnSign] = React.useState("")
+  const [portfolioValue, setPortfolioValue] = React.useState<number>(0)
+  const [percentageReturn, setPercentageReturn] = React.useState<number>(0)
 
-  const netAssetValue = assets.reduce((total, asset) => {
-    return total + asset.averagePrice * asset.position
-  }, 0)
+  useEffect(() => {
+    if (!assets) return
+    const marketValue = assets.reduce((total, asset) => {
+      if (!asset.marketPrice) {
+        return 0
+      } else {
+        return total + asset.position * asset.marketPrice
+      }
+    }, 0)
 
-  const percentageReturn = findPercentageReturn(user.buyingPower, netAssetValue)
+    const portfolioValueInput = assets.reduce((total, asset) => {
+      return total + asset.averagePrice * asset.position
+    }, 0)
+    setPortfolioValue(portfolioValueInput)
+
+    const cashSpent = 100000 - user.buyingPower
+    setPercentageReturn(((marketValue - cashSpent) / cashSpent) * 100)
+
+    const tableDataInput = assets.map((a) => {
+      return {
+        ...a,
+        marketPrice: a.marketPrice.toFixed(2),
+        value: (a.position * a.averagePrice).toFixed(2),
+        returnCurrency: (a.position * (a.marketPrice - a.averagePrice)).toFixed(
+          2
+        ),
+        returnPercent: (
+          ((a.marketPrice - a.averagePrice) / a.averagePrice) *
+          100
+        ).toFixed(2)
+      }
+    })
+    setTableData(tableDataInput)
+  }, [assets])
 
   useEffect(() => {
     if (percentageReturn >= 0) {
@@ -41,14 +70,14 @@ const CashDetails: React.FC<RowProps> = ({ assets, user }) => {
       <div>
         Net Asset Value:{" "}
         <b className={styles["value"]}>
-          {formatToCurrencyString(netAssetValue)}
+          {formatToCurrencyString(portfolioValue)}
         </b>{" "}
         <b
           className={
             styles[`${returnSign === "positive" ? "positive" : "negative"}`]
           }
         >
-          {`${percentageReturn.toFixed(1).toString()}`}%
+          {percentageReturn.toFixed(2)}%
         </b>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
 import { Button, Divider, message, Spin } from "antd"
-import { Asset } from "@/utils/types"
+import { Asset, AssetTableRecord } from "@/utils/types"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
@@ -34,13 +34,15 @@ const AssetsPage: React.FC = () => {
       getAssets(id, token).then((data) => setAssets(data))
     },
     {
-      retry: false,
-      retryOnMount: false
+      retry: 2,
+      retryOnMount: false,
+      refetchOnWindowFocus: false
     }
   )
   const [assets, setAssets] = useState<Asset[]>([])
   const [modalOpen, setModalOpen] = React.useState(false)
   const [transactionType] = React.useState("")
+  const [tableData, setTableData] = useState<AssetTableRecord[]>([])
 
   useEffect(() => {
     const item = window.localStorage.getItem("user") as string
@@ -99,11 +101,13 @@ const AssetsPage: React.FC = () => {
       <h1 className={styles["username"]}>
         {user && capitalizeEachWord(user.username)}
       </h1>
-      {assets && user && <CashDetails assets={assets} user={user} />}
+      {assets && user && (
+        <CashDetails assets={assets} user={user} setTableData={setTableData} />
+      )}
       <Divider />
       {assets && assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
       {assets && assets.length !== 0 ? (
-        <AssetsTable assets={assets} refetch={refetch} />
+        <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
       ) : (
         <BuyFirstAsset />
       )}
