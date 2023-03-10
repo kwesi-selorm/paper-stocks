@@ -2,7 +2,6 @@ import { Asset, AssetTableRecord } from "@/utils/types"
 import React, { useCallback, useContext } from "react"
 import styles from "../../styles/components/AssetsTable.module.css"
 import { Table, Space, Button } from "antd"
-import { formatToCurrencyString } from "@/utils/number-utils"
 import Link from "next/link"
 import { ColumnsType } from "antd/es/table"
 import ModalContext from "@/contexts/modal-context/modal-context"
@@ -11,9 +10,10 @@ import ReloadButton from "@/components/ReloadButton"
 type Props = {
   assets: Asset[]
   refetch: () => void
+  tableData: AssetTableRecord[]
 }
 
-const AssetsTable: React.FC<Props> = ({ assets, refetch }) => {
+const AssetsTable: React.FC<Props> = ({ assets, refetch, tableData }) => {
   const { setModalId, setOpen } = useContext(ModalContext)
 
   const tableTitle = useCallback(() => {
@@ -23,12 +23,8 @@ const AssetsTable: React.FC<Props> = ({ assets, refetch }) => {
         <ReloadButton function={refetch} />
       </div>
     )
-  }, [])
-  const tableData: AssetTableRecord[] = assets.map((a) => ({
-    ...a,
-    averagePrice: formatToCurrencyString(a.averagePrice),
-    value: formatToCurrencyString(a.position * a.averagePrice)
-  }))
+  }, [refetch])
+
   const columns: ColumnsType<AssetTableRecord> = [
     {
       title: `Assets (${assets.length})`,
@@ -41,8 +37,48 @@ const AssetsTable: React.FC<Props> = ({ assets, refetch }) => {
       key: "position",
       sorter: (a, b) => a.position - b.position
     },
-    { title: "Average ($)", dataIndex: "averagePrice", key: "averagePrice" },
+    {
+      title: "Average price ($)",
+      dataIndex: "averagePrice",
+      key: "averagePrice"
+    },
     { title: "Value ($)", dataIndex: "value", key: "value" },
+    { title: "Market price ($)", dataIndex: "marketPrice", key: "marketPrice" },
+    {
+      title: "Return",
+      children: [
+        {
+          title: "$",
+          dataIndex: "returnCurrency",
+          key: "returnCurrency",
+          render: (text, record) => (
+            <span
+              style={{
+                color: Number(record.returnCurrency) >= 0 ? "green" : "red"
+              }}
+            >
+              {record.returnCurrency}
+            </span>
+          ),
+          sorter: (a, b) => Number(a.returnCurrency) - Number(b.returnCurrency)
+        },
+        {
+          title: "%",
+          dataIndex: "returnPercent",
+          key: "returnPercent",
+          render: (text, record) => (
+            <span
+              style={{
+                color: Number(record.returnPercent) >= 0 ? "green" : "red"
+              }}
+            >
+              {record.returnPercent}
+            </span>
+          ),
+          sorter: (a, b) => Number(a.returnPercent) - Number(b.returnPercent)
+        }
+      ]
+    },
     {
       title: "Action",
       key: "action",
@@ -71,7 +107,7 @@ const AssetsTable: React.FC<Props> = ({ assets, refetch }) => {
         dataSource={tableData}
         pagination={false}
         rowKey={(record) => record._id}
-        size={"large"}
+        // size={"large"}
         title={tableTitle}
       />
     </>
