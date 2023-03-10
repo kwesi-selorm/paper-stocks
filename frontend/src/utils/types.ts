@@ -6,6 +6,8 @@ export interface Asset {
   averagePrice: number
   value: number
   userId: string
+  marketPrice: number
+  returnBasis?: number
   __v: number
 }
 
@@ -13,10 +15,18 @@ export interface AssetPlotData extends Omit<Asset, "value"> {
   value: string
 }
 
-export interface AssetTableRecord
-  extends Omit<Asset, "averagePrice" | "value"> {
-  averagePrice: string
+export interface AssetTableRecord {
+  _id: string
+  symbol: string
+  name: string
+  position: number
+  averagePrice: number
   value: string
+  userId: string
+  marketPrice: string
+  __v: number
+  returnCurrency: string
+  returnPercent: string
 }
 
 export type LoggedInUser = {
