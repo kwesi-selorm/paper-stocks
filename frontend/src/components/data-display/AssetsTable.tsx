@@ -1,7 +1,7 @@
 import { Asset, AssetTableRecord } from "@/utils/types"
 import React, { useCallback, useContext } from "react"
 import styles from "../../styles/components/AssetsTable.module.css"
-import { Table, Space, Button } from "antd"
+import { Table, Button } from "antd"
 import { ColumnsType } from "antd/es/table"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import ReloadButton from "@/components/ReloadButton"
@@ -88,10 +88,7 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
       title: "Action",
       key: "action",
       render: (text, record) => (
-        <Space
-          size="middle"
-          style={{ display: "flex", flexDirection: "column" }}
-        >
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <Button
             htmlType="button"
             onClick={() => handleOnBuyAsset(record)}
@@ -102,12 +99,12 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
           <Button
             danger
             htmlType="button"
-            onClick={handleOnSellAsset}
+            onClick={() => handleOnSellAsset(record)}
             type="primary"
           >
             Sell
           </Button>
-        </Space>
+        </div>
       )
     }
   ]
@@ -118,7 +115,8 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
     setModalId("buy-asset")
   }
 
-  async function handleOnSellAsset() {
+  async function handleOnSellAsset(record: AssetTableRecord) {
+    setAsset(record)
     setOpen(true)
     setModalId("sell-asset")
   }
