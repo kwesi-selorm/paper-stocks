@@ -9,7 +9,7 @@ export default async function getStockPrice(
   if (!token) return
 
   const axiosConfig = {
-    data: { tickers: symbols },
+    data: { symbols },
     url: `${apiUrl}/stocks/stock-price/${userId}`,
     method: "POST",
     headers: {
