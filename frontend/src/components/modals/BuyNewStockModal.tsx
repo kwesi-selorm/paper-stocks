@@ -144,7 +144,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
       okText="Confirm"
       open={open}
       onCancel={handleCancel}
-      title={<h2>Buy new stock</h2>}
+      title={<h2>Get your first stock!</h2>}
     >
       <Form title="Buy new stock">
         <Form.Item label="Symbol" name="symbol">
