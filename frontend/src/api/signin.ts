@@ -3,7 +3,6 @@ import { apiUrl } from "@/utils/constants"
 import { SignInInput } from "@/utils/types"
 
 export default async function signIn(input: SignInInput) {
-  console.log(apiUrl)
   const axiosConfig = {
     method: "POST",
     url: `${apiUrl}/users/signin`,
