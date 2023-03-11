@@ -1,14 +1,12 @@
 .main {
   align-items: center;
-  /*background-color: #000;*/
-  /*color: #fff;*/
   height: 100vh;
   padding-top: 20%;
   text-align: center;
-
+  width: 100vw;
 }
 
 .main button {
   margin-top: 30px;
-    width: 7%;
+  width: 7%;
 }

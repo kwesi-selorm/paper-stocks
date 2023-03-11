@@ -1,9 +1,11 @@
 .assets-page {
+  align-items: center;
   height: 100vh;
   padding-bottom: 10%;
   padding-top: 5%;
   margin: 0 auto;
   text-align: center;
+  width: 100vw;
 }
 
 .username {

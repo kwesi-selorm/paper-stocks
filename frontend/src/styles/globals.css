@@ -17,13 +17,19 @@
 
 html,
 body {
-  padding-bottom: 15%;
-  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  right: 0;
+  top: 0;
+  text-align: center;
+  width: 100%;
 }
 
 .form {
-    padding-top: 10%;
-    width: 40%;
-    margin: 0 auto;
-    text-align: left;
+  padding-top: 10%;
+  width: 40%;
+  margin: 0 auto;
+  text-align: left;
 }

@@ -1,5 +1,10 @@
 .assets-table {
+  align-items: center;
   border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 60%;
   margin: 0 auto 2em;
-  width: 50%;
+  text-align: center;
 }
