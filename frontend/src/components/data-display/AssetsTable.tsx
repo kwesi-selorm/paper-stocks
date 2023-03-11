@@ -2,10 +2,10 @@ import { Asset, AssetTableRecord } from "@/utils/types"
 import React, { useCallback, useContext } from "react"
 import styles from "../../styles/components/AssetsTable.module.css"
 import { Table, Space, Button } from "antd"
-import Link from "next/link"
 import { ColumnsType } from "antd/es/table"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import ReloadButton from "@/components/ReloadButton"
+import AssetContext from "@/contexts/asset-context/asset-context"
 
 type Props = {
   assets: Asset[]
@@ -13,8 +13,9 @@ type Props = {
   tableData: AssetTableRecord[]
 }
 
-const AssetsTable: React.FC<Props> = ({ assets, refetch, tableData }) => {
+const AssetsTable = ({ assets, refetch, tableData }: Props) => {
   const { setModalId, setOpen } = useContext(ModalContext)
+  const { setAsset } = useContext(AssetContext)
 
   const tableTitle = useCallback(() => {
     return (
@@ -38,12 +39,16 @@ const AssetsTable: React.FC<Props> = ({ assets, refetch, tableData }) => {
       sorter: (a, b) => a.position - b.position
     },
     {
-      title: "Average price ($)",
+      title: "Average",
       dataIndex: "averagePrice",
       key: "averagePrice"
     },
-    { title: "Value ($)", dataIndex: "value", key: "value" },
-    { title: "Market price ($)", dataIndex: "marketPrice", key: "marketPrice" },
+    { title: "Value", dataIndex: "value", key: "value" },
+    {
+      title: "Market",
+      dataIndex: "marketPrice",
+      key: "marketPrice"
+    },
     {
       title: "Return",
       children: [
@@ -82,35 +87,61 @@ const AssetsTable: React.FC<Props> = ({ assets, refetch, tableData }) => {
     {
       title: "Action",
       key: "action",
-      render: () => (
-        <Space size="middle">
-          <Link href="#">Buy</Link>
-          <Link href="#">Sell</Link>
+      render: (text, record) => (
+        <Space
+          size="middle"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          <Button
+            htmlType="button"
+            onClick={() => handleOnBuyAsset(record)}
+            type="primary"
+          >
+            Buy
+          </Button>
+          <Button
+            danger
+            htmlType="button"
+            onClick={handleOnSellAsset}
+            type="primary"
+          >
+            Sell
+          </Button>
         </Space>
       )
     }
   ]
 
-  async function handleBuy() {
+  async function handleOnBuyAsset(record: AssetTableRecord) {
+    setAsset(record)
+    setOpen(true)
+    setModalId("buy-asset")
+  }
+
+  async function handleOnSellAsset() {
+    setOpen(true)
+    setModalId("sell-asset")
+  }
+
+  async function handleOnBuyNewStock() {
     setOpen(true)
     setModalId("buy-new-stock")
   }
 
   return (
-    <>
-      <Button htmlType="button" onClick={handleBuy} size="large">
+    <section className={styles["assets-table"]}>
+      <Button htmlType="button" onClick={handleOnBuyNewStock} size="large">
         Buy new stock
       </Button>
       <Table
-        className={styles["assets-table"]}
         columns={columns}
         dataSource={tableData}
         pagination={false}
         rowKey={(record) => record._id}
-        // size={"large"}
+        // tableLayout="auto"
         title={tableTitle}
       />
-    </>
+    </section>
   )
 }
 

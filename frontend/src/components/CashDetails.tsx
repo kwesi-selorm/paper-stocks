@@ -36,8 +36,9 @@ const CashDetails: React.FC<RowProps> = ({ assets, user, setTableData }) => {
     const tableDataInput = assets.map((a) => {
       return {
         ...a,
-        marketPrice: a.marketPrice.toFixed(2),
-        value: (a.position * a.averagePrice).toFixed(2),
+        averagePrice: formatToCurrencyString(a.averagePrice),
+        marketPrice: formatToCurrencyString(a.marketPrice),
+        value: formatToCurrencyString(a.position * a.averagePrice),
         returnCurrency: (a.position * (a.marketPrice - a.averagePrice)).toFixed(
           2
         ),
