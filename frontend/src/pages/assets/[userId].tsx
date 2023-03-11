@@ -81,7 +81,7 @@ const AssetsPage: React.FC = () => {
       case "buy-first-stock":
         return <BuyNewStockModal refetch={refetch} />
       case "buy-asset":
-        return <BuyAssetModal />
+        return <BuyAssetModal refetchAssets={refetch} />
       case "sell-asset":
         return <SellAssetModal />
       default:

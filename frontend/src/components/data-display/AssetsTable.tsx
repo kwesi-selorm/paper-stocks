@@ -138,7 +138,7 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
         dataSource={tableData}
         pagination={false}
         rowKey={(record) => record._id}
-        // tableLayout="auto"
+        tableLayout="auto"
         title={tableTitle}
       />
     </section>

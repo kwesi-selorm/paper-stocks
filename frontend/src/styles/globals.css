@@ -33,3 +33,7 @@ body {
   margin: 0 auto;
   text-align: left;
 }
+
+button {
+  min-width: 100px;
+}

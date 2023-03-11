@@ -1,6 +1,6 @@
 import ModalContext from "@/contexts/modal-context/modal-context"
 import { Form, InputNumber, message, Modal, Spin } from "antd"
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import ReloadButton from "@/components/ReloadButton"
 import getStockPrice from "@/api/get-stock-price"
 import AssetContext from "@/contexts/asset-context/asset-context"
@@ -8,20 +8,27 @@ import UserContext from "@/contexts/user-context/user-context"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import { AxiosError } from "axios"
 import { useQuery } from "react-query"
+import buyAsset from "@/api/buy-asset"
+import { useRouter } from "next/router"
+import getUser from "@/api/get-user"
 
 const initialFormValues = {
-  symbol: "",
-  name: "",
-  position: 0,
-  amountInvested: 0
+  position: 0
 }
 
-const BuyAssetModal = () => {
+interface Props {
+  refetchAssets: () => void
+}
+
+const BuyAssetModal = ({ refetchAssets }: Props) => {
   const { setModalId, open, setOpen } = useContext(ModalContext)
-  const { token } = useContext(UserContext)
+  const { user, setUser, token } = useContext(UserContext)
   const { asset, lastPrice, setLastPrice } = useContext(AssetContext)
   const [values, setValues] = React.useState(initialFormValues)
-  const { user } = useContext(UserContext)
+  const [amountInvested, setAmountInvested] = React.useState<number>(0)
+  const router = useRouter()
+  const { userId } = router.query
+  const id = userId as string
 
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, [asset]],
@@ -39,6 +46,21 @@ const BuyAssetModal = () => {
     }
   )
 
+  const { refetch: refetchUser } = useQuery(
+    ["user", id, token],
+    () => getUser(id, token),
+    {
+      enabled: false,
+      refetchOnWindowFocus: false,
+      retry: false,
+      retryOnMount: false
+    }
+  )
+
+  useEffect(() => {
+    setAmountInvested(lastPrice * values.position)
+  }, [lastPrice, values.position])
+
   if (isLoading) return <Spin />
   if (isError) {
     if (error instanceof AxiosError) {
@@ -49,10 +71,34 @@ const BuyAssetModal = () => {
     return null
   }
 
-  async function handleAssetBuy(
+  async function handleSubmit(
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
   ) {
     e.preventDefault()
+    const data = {
+      name: asset?.name as string,
+      symbol: asset?.symbol as string,
+      position: values.position,
+      amountInvested: amountInvested
+    }
+    try {
+      await buyAsset(data, id, token)
+      await refetchAssets()
+      const returnedUser = refetchUser()
+      if (!returnedUser) return
+      refetchUser().then((data) => {
+        if (data.data) {
+          setUser(data.data)
+        }
+      })
+    } catch (e: any) {
+      if (e instanceof AxiosError) {
+        message.error(e?.response?.data.message)
+      }
+      message.error(JSON.stringify(e.message))
+    }
+    setOpen(false)
+    setModalId("")
   }
 
   return (
@@ -68,17 +114,24 @@ const BuyAssetModal = () => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        onClick: handleAssetBuy
+        onClick: handleSubmit
       }}
       open={open}
     >
-      <Form>
+      <Form
+        initialValues={{
+          lastPrice,
+          amountInvested: lastPrice * values.position
+        }}
+      >
         <Form.Item label="Asset">
           {asset?.name} (${asset?.symbol})
         </Form.Item>
+
         <Form.Item label="Last market price">
           {formatToCurrencyString(lastPrice)}
         </Form.Item>
+
         <Form.Item label="Position" name="position">
           <InputNumber
             autoFocus
