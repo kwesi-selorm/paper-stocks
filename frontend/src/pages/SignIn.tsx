@@ -7,6 +7,7 @@ import styles from "../styles/pages/SignIn.module.css"
 import Link from "next/link"
 import ButtonsRow from "@/components/ButtonsRow"
 import UserContext from "@/contexts/user-context/user-context"
+import { AiOutlineUser, AiOutlineLock } from "react-icons/ai"
 
 const initialState = {
   username: "",
@@ -51,28 +52,33 @@ export const SignInPage: React.FC = () => {
   return (
     <Form className={styles["form"]} colon={false}>
       <Form.Item
-        label="Username"
         name="username"
         rules={[{ required: true, message: "Please provide your username" }]}
       >
         <Input
+          bordered
           onChange={(e) => setInput({ ...input, username: e.target.value })}
+          placeholder="Username"
+          prefix={<AiOutlineUser />}
         />
       </Form.Item>
+
       <Form.Item
-        label="Password"
         name="password"
         rules={[
           { required: true, message: "Please provide your password" },
           {
             type: "string",
             min: 8,
-            message: "Password must be at least 8 characters"
+            message:
+              "Password must be at least 8 characters: 1 uppercase, 1 lowercase, 1 number, and 1 special character"
           }
         ]}
       >
         <Input.Password
           onChange={(e) => setInput({ ...input, password: e.target.value })}
+          placeholder="Password"
+          prefix={<AiOutlineLock />}
         />
       </Form.Item>
       <ButtonsRow>
