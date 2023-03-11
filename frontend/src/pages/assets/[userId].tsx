@@ -28,7 +28,7 @@ const AssetsPage: React.FC = () => {
   // Assets
   const { data, error, isLoading, isError, refetch } = useQuery(
     ["assets", id, token],
-    () => {
+    async () => {
       if (!token) return
       getAssets(id, token).then((data) => setAssets(data))
     },
@@ -83,7 +83,7 @@ const AssetsPage: React.FC = () => {
       case "buy-asset":
         return <BuyAssetModal refetchAssets={refetch} />
       case "sell-asset":
-        return <SellAssetModal />
+        return <SellAssetModal refetchAssets={refetch} />
       default:
         return null
     }
@@ -94,7 +94,7 @@ const AssetsPage: React.FC = () => {
       {renderModal()}
 
       <h1 className={styles["username"]}>
-        {user && capitalizeEachWord(user.username)}
+        {user && `Welcome, ${capitalizeEachWord(user.username)}`}
       </h1>
 
       {assets && user && (
@@ -104,12 +104,19 @@ const AssetsPage: React.FC = () => {
       <Divider />
       {assets && assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
 
-      <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
+      {assets && (
+        <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
+      )}
 
-      {assets.length == 0 && <BuyFirstAsset />}
+      {assets && assets.length == 0 && <BuyFirstAsset />}
 
       <Link href={"/SignIn"} onClick={handleSignOut}>
-        <Button htmlType={"button"} type={"primary"} size={"large"}>
+        <Button
+          htmlType={"button"}
+          size={"large"}
+          style={{ marginBottom: "10rem" }}
+          type={"primary"}
+        >
           Sign out
         </Button>
       </Link>
