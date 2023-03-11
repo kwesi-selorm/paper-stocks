@@ -9,7 +9,6 @@ import AssetsTable from "@/components/data-display/AssetsTable"
 import CashDetails from "@/components/CashDetails"
 import AssetsGraph from "@/components/data-display/AssetsGraph"
 import BuyFirstAsset from "@/components/BuyFirstAsset"
-import BuySellAssetModal from "@/components/BuySellAssetModal"
 import { capitalizeEachWord } from "@/utils/word-utils"
 import UserContext from "@/contexts/user-context/user-context"
 import { useQuery } from "react-query"
@@ -34,14 +33,12 @@ const AssetsPage: React.FC = () => {
       getAssets(id, token).then((data) => setAssets(data))
     },
     {
-      retry: 2,
+      retry: 1,
       retryOnMount: false,
       refetchOnWindowFocus: false
     }
   )
   const [assets, setAssets] = useState<Asset[]>([])
-  const [modalOpen, setModalOpen] = React.useState(false)
-  const [transactionType] = React.useState("")
   const [tableData, setTableData] = useState<AssetTableRecord[]>([])
 
   useEffect(() => {
@@ -67,8 +64,10 @@ const AssetsPage: React.FC = () => {
       message
         .error(error?.response?.data.message)
         .then(() => router.push("/signin"))
+      return null
     }
     message.error(JSON.stringify(error)).then(() => router.push("/signin"))
+    return null
   }
 
   if (isLoading) {
@@ -93,11 +92,6 @@ const AssetsPage: React.FC = () => {
   return (
     <div className={styles["assets-page"]}>
       {renderModal()}
-      <BuySellAssetModal
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        transactionType={transactionType}
-      />
       <h1 className={styles["username"]}>
         {user && capitalizeEachWord(user.username)}
       </h1>
