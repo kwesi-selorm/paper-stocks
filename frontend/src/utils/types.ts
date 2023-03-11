@@ -20,7 +20,7 @@ export interface AssetTableRecord {
   symbol: string
   name: string
   position: number
-  averagePrice: number
+  averagePrice: string
   value: string
   userId: string
   marketPrice: string
