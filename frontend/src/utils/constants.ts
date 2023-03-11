@@ -1,7 +1,7 @@
 export const apiUrl =
   process.env.NODE_ENV == "development"
-    ? process.env.LOCALHOST_URL ?? "http://localhost:8000/api"
-    : process.env.HEROKU_URL
+    ? process.env.NEXT_PUBLIC_LOCALHOST_URL ?? "http://localhost:8000/api"
+    : process.env.NEXT_PUBLIC_HEROKU_URL
 
 export const newStockInitialInput = {
   symbol: "",
