@@ -92,19 +92,22 @@ const AssetsPage: React.FC = () => {
   return (
     <div className={styles["assets-page"]}>
       {renderModal()}
+
       <h1 className={styles["username"]}>
         {user && capitalizeEachWord(user.username)}
       </h1>
+
       {assets && user && (
         <CashDetails assets={assets} user={user} setTableData={setTableData} />
       )}
+
       <Divider />
       {assets && assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
-      {assets && assets.length !== 0 ? (
-        <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
-      ) : (
-        <BuyFirstAsset />
-      )}
+
+      <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
+
+      {assets.length == 0 && <BuyFirstAsset />}
+
       <Link href={"/SignIn"} onClick={handleSignOut}>
         <Button htmlType={"button"} type={"primary"} size={"large"}>
           Sign out
