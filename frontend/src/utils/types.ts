@@ -46,6 +46,11 @@ export type ListedStock = {
   type: string
 }
 
+export enum MarketState {
+  OPEN = "OPEN",
+  CLOSED = "CLOSED"
+}
+
 export type NewStockInitialInputType = {
   symbol: string
   name: string

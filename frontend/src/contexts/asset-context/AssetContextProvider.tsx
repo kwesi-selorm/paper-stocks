@@ -9,10 +9,18 @@ interface Props {
 const AssetContextProvider: React.FC<Props> = ({ children }) => {
   const [asset, setAsset] = React.useState<AssetTableRecord | null>(null)
   const [lastPrice, setLastPrice] = React.useState<number>(0)
+  const [marketState, setMarketState] = React.useState<string>("")
 
   const value = useMemo(() => {
-    return { asset, setAsset, lastPrice, setLastPrice }
-  }, [asset, setAsset, lastPrice, setLastPrice])
+    return {
+      asset,
+      setAsset,
+      lastPrice,
+      setLastPrice,
+      marketState,
+      setMarketState
+    }
+  }, [asset, setAsset, lastPrice, setLastPrice, marketState, setMarketState])
 
   return <AssetContext.Provider value={value}>{children}</AssetContext.Provider>
 }

@@ -7,7 +7,7 @@ import AssetContext from "@/contexts/asset-context/asset-context"
 import UserContext from "@/contexts/user-context/user-context"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import { AxiosError } from "axios"
-import { useQuery } from "react-query"
+import { QueryObserverResult, useQuery } from "react-query"
 import buyAsset from "@/api/buy-asset"
 import { useRouter } from "next/router"
 import getUser from "@/api/get-user"
@@ -18,12 +18,14 @@ const initialFormValues = {
 
 interface Props {
   refetchAssets: () => void
+  refetchMarketState: () => Promise<QueryObserverResult<any>>
 }
 
-const BuyAssetModal = ({ refetchAssets }: Props) => {
+const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
   const { setModalId, open, setOpen } = useContext(ModalContext)
   const { user, setUser, token } = useContext(UserContext)
-  const { asset, lastPrice, setLastPrice } = useContext(AssetContext)
+  const { asset, lastPrice, setLastPrice, marketState, setMarketState } =
+    useContext(AssetContext)
   const [values, setValues] = React.useState(initialFormValues)
   const [amountInvested, setAmountInvested] = React.useState<number>(0)
   const router = useRouter()
@@ -56,6 +58,13 @@ const BuyAssetModal = ({ refetchAssets }: Props) => {
       retryOnMount: false
     }
   )
+
+  useEffect(() => {
+    refetchMarketState().then((res) => {
+      if (res.data === undefined) return
+      setMarketState(res.data.marketState)
+    })
+  }, [])
 
   useEffect(() => {
     setAmountInvested(lastPrice * values.position)
@@ -114,6 +123,7 @@ const BuyAssetModal = ({ refetchAssets }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
+        disabled: marketState === "CLOSED",
         onClick: handleSubmit
       }}
       open={open}
@@ -141,14 +151,19 @@ const BuyAssetModal = ({ refetchAssets }: Props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Last price" name="lastPrice">
+        <Form.Item label="Last price">
           <>
             {formatToCurrencyString(lastPrice)}{" "}
-            <ReloadButton function={refetch} />
+            <ReloadButton function={refetch} />{" "}
+            {marketState === "CLOSED" ? (
+              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
+            ) : (
+              <span style={{ color: "green" }}>NASDAQ-OPEN</span>
+            )}
           </>
         </Form.Item>
 
-        <Form.Item label="Total cost of investment" name="amountInvested">
+        <Form.Item label="Total cost of investment">
           <b>
             {(lastPrice * values.position).toLocaleString("en-US", {
               style: "currency",

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
 import { Button, Divider, message, Spin } from "antd"
 import { Asset, AssetTableRecord } from "@/utils/types"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
 import AssetsTable from "@/components/data-display/AssetsTable"
@@ -17,6 +16,8 @@ import BuyNewStockModal from "@/components/modals/BuyNewStockModal"
 import BuyAssetModal from "@/components/modals/BuyAssetModal"
 import SellAssetModal from "@/components/modals/SellAssetModal"
 import ModalContext from "@/contexts/modal-context/modal-context"
+import AssetContext from "@/contexts/asset-context/asset-context"
+import getMarketState from "@/api/get-market-state"
 
 const AssetsPage: React.FC = () => {
   const router = useRouter()
@@ -24,6 +25,7 @@ const AssetsPage: React.FC = () => {
   const id = userId as string
   const { user, setUser, token, setToken } = useContext(UserContext)
   const { modalId } = useContext(ModalContext)
+  const { asset, setMarketState } = useContext(AssetContext)
 
   // Assets
   const { data, error, isLoading, isError, refetch } = useQuery(
@@ -38,6 +40,20 @@ const AssetsPage: React.FC = () => {
       refetchOnWindowFocus: false
     }
   )
+
+  //Market state
+  const { refetch: refetchMarketState } = useQuery(
+    ["market-state", asset],
+    async () => await getMarketState(asset?.symbol),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        setMarketState(data.marketState)
+      },
+      retry: 1
+    }
+  )
+
   const [assets, setAssets] = useState<Asset[]>([])
   const [tableData, setTableData] = useState<AssetTableRecord[]>([])
 
@@ -51,11 +67,9 @@ const AssetsPage: React.FC = () => {
     setAssets(data)
   }, [data])
 
-  const handleSignOut = async () => {
-    setTimeout(
-      () => message.success("You have been signed out successfully"),
-      1000
-    )
+  async function handleSignOut() {
+    await router.push("/")
+    message.success("You have been signed out successfully")
     setUser(null)
   }
 
@@ -77,13 +91,27 @@ const AssetsPage: React.FC = () => {
   function renderModal() {
     switch (modalId) {
       case "buy-new-stock":
-        return <BuyNewStockModal refetch={refetch} />
       case "buy-first-stock":
-        return <BuyNewStockModal refetch={refetch} />
+        return (
+          <BuyNewStockModal
+            refetch={refetch}
+            refetchMarketState={refetchMarketState}
+          />
+        )
       case "buy-asset":
-        return <BuyAssetModal refetchAssets={refetch} />
+        return (
+          <BuyAssetModal
+            refetchAssets={refetch}
+            refetchMarketState={refetchMarketState}
+          />
+        )
       case "sell-asset":
-        return <SellAssetModal refetchAssets={refetch} />
+        return (
+          <SellAssetModal
+            refetchAssets={refetch}
+            //refetchMarketState={refetchMarketState}
+          />
+        )
       default:
         return null
     }
@@ -110,16 +138,17 @@ const AssetsPage: React.FC = () => {
 
       {assets && assets.length == 0 && <BuyFirstAsset />}
 
-      <Link href={"/SignIn"} onClick={handleSignOut}>
-        <Button
-          htmlType={"button"}
-          size={"large"}
-          style={{ marginBottom: "10rem" }}
-          type={"primary"}
-        >
-          Sign out
-        </Button>
-      </Link>
+      {/*<Link href={"/SignIn"} onClick={handleSignOut}>*/}
+      <Button
+        htmlType={"button"}
+        onClick={handleSignOut}
+        size={"large"}
+        style={{ marginBottom: "10rem" }}
+        type={"primary"}
+      >
+        Sign out
+      </Button>
+      {/*</Link>*/}
     </div>
   )
 }
