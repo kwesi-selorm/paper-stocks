@@ -48,6 +48,7 @@ const AssetsPage: React.FC = () => {
     {
       enabled: false,
       onSuccess: (data) => {
+        if (data.marketState === undefined) return
         setMarketState(data.marketState)
       },
       retry: 1
