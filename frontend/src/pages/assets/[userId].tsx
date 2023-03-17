@@ -123,23 +123,22 @@ const AssetsPage: React.FC = () => {
       {renderModal()}
 
       <h1 className={styles["username"]}>
-        {user && `Welcome, ${capitalizeEachWord(user.username)}`}
+        {user != null && `Welcome, ${capitalizeEachWord(user.username)}`}
       </h1>
 
-      {assets && user && (
+      {user != null && (
         <CashDetails assets={assets} user={user} setTableData={setTableData} />
       )}
 
       <Divider />
-      {assets && assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
+      {assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
 
-      {assets && (
+      {assets.length > 0 && (
         <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
       )}
 
-      {assets && assets.length == 0 && <BuyFirstAsset />}
+      {assets.length == 0 && <BuyFirstAsset />}
 
-      {/*<Link href={"/SignIn"} onClick={handleSignOut}>*/}
       <Button
         htmlType={"button"}
         onClick={handleSignOut}
