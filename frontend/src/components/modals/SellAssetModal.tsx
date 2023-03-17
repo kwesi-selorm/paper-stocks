@@ -130,7 +130,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
         <Form.Item label="Last price" name="lastPrice">
           <>
             {formatToCurrencyString(lastPrice)}{" "}
-            <ReloadButton function={refetch} />
+            <ReloadButton function={refetch} />{" "}
             {marketState !== "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (

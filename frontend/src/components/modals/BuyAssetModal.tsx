@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ModalContext from "@/contexts/modal-context/modal-context"
 import { Form, InputNumber, message, Modal, Spin } from "antd"
 import React, { useContext, useEffect } from "react"
@@ -17,7 +18,7 @@ const initialFormValues = {
 }
 
 interface Props {
-  refetchAssets: () => void
+  refetchAssets: () => Promise<QueryObserverResult<any>>
   refetchMarketState: () => Promise<QueryObserverResult<any>>
 }
 
@@ -35,7 +36,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, [asset]],
     async () => {
-      if (!user || !token || !asset) return
+      if (user == null || token == null || asset == null) return
       return await getStockPrice(user.id, token, [asset.symbol])
     },
     {
@@ -64,6 +65,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       if (res.data === undefined) return
       setMarketState(res.data.marketState)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -100,6 +102,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
           setUser(data.data)
         }
       })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (e instanceof AxiosError) {
         message.error(e?.response?.data.message)
@@ -123,7 +126,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState != "OPEN",
+        disabled: marketState !== "OPEN",
         onClick: handleSubmit
       }}
       open={open}

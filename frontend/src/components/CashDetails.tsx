@@ -78,7 +78,10 @@ const CashDetails: React.FC<RowProps> = ({ assets, user, setTableData }) => {
             styles[`${returnSign === "positive" ? "positive" : "negative"}`]
           }
         >
-          {assets.length === 0 ? 0 : percentageReturn.toFixed(2)}%
+          {Boolean(assets) && assets.length === 0
+            ? 0
+            : percentageReturn.toFixed(2)}
+          %
         </b>
       </div>
     </section>

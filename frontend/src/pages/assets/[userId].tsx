@@ -28,11 +28,16 @@ const AssetsPage: React.FC = () => {
   const { asset, setMarketState } = useContext(AssetContext)
 
   // Assets
-  const { data, error, isLoading, isError, refetch } = useQuery(
+  const { error, isLoading, isError, refetch } = useQuery(
     ["assets", id, token],
     async () => {
-      if (!token) return
-      getAssets(id, token).then((data) => setAssets(data))
+      if (token == null) return
+      getAssets(id, token).then((data) => {
+        if (data === undefined) {
+          return
+        }
+        setAssets(data)
+      })
     },
     {
       retry: 1,
@@ -48,7 +53,9 @@ const AssetsPage: React.FC = () => {
     {
       enabled: false,
       onSuccess: (data) => {
-        if (data.marketState === undefined) return
+        if (data === undefined) {
+          return
+        }
         setMarketState(data.marketState)
       },
       retry: 1
@@ -63,10 +70,7 @@ const AssetsPage: React.FC = () => {
     const storedUser = JSON.parse(item)
     setUser(storedUser)
     setToken(storedUser.token)
-
-    if (!data) return
-    setAssets(data)
-  }, [data])
+  }, [])
 
   async function handleSignOut() {
     await router.push("/")
@@ -131,13 +135,15 @@ const AssetsPage: React.FC = () => {
       )}
 
       <Divider />
-      {assets.length > 0 ? <AssetsGraph assets={assets} /> : null}
+      {Boolean(assets) && assets?.length > 0 ? (
+        <AssetsGraph assets={assets} />
+      ) : null}
 
-      {assets.length > 0 && (
+      {Boolean(assets) && assets?.length > 0 && (
         <AssetsTable assets={assets} refetch={refetch} tableData={tableData} />
       )}
 
-      {assets.length == 0 && <BuyFirstAsset />}
+      {Boolean(assets) && assets?.length == 0 && <BuyFirstAsset />}
 
       <Button
         htmlType={"button"}
