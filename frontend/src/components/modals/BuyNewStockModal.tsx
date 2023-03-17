@@ -148,7 +148,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState === "CLOSED",
+        disabled: marketState !== "OPEN",
         htmlType: "submit",
         onClick: handleSubmit
       }}
@@ -200,7 +200,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               currency: "USD"
             })}{" "}
             <ReloadButton function={fetchStockPrice} />{" "}
-            {marketState === "CLOSED" ? (
+            {marketState !== "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>

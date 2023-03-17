@@ -19,7 +19,8 @@ interface Props {
 const SellAssetModal = ({ refetchAssets }: Props) => {
   const { setModalId, open, setOpen } = useContext(ModalContext)
   const { user, setUser, token } = useContext(UserContext)
-  const { asset, lastPrice, setLastPrice } = useContext(AssetContext)
+  const { asset, lastPrice, setLastPrice, marketState } =
+    useContext(AssetContext)
   const [values, setValues] = React.useState({ position: 0 })
   const router = useRouter()
   const { userId } = router.query
@@ -107,6 +108,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
+        disabled: marketState !== "OPEN",
         onClick: handleSubmit
       }}
       open={open}
@@ -129,6 +131,11 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />
+            {marketState !== "OPEN" ? (
+              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
+            ) : (
+              <span style={{ color: "green" }}>NASDAQ-OPEN</span>
+            )}
           </>
         </Form.Item>
       </Form>

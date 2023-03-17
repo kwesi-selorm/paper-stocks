@@ -123,7 +123,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState === "CLOSED",
+        disabled: marketState != "OPEN",
         onClick: handleSubmit
       }}
       open={open}
@@ -155,7 +155,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {marketState === "CLOSED" ? (
+            {marketState !== "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
