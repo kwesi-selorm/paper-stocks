@@ -8,7 +8,7 @@ export default async function signUp(input: SignUpInput) {
     url: `${apiUrl}/users/signup`,
     data: {
       username: input.username,
-      email: input.username,
+      email: input.email,
       password: input.password,
       confirmPassword: input.confirmPassword,
       passwordClue: input.passwordClue
