@@ -8,7 +8,7 @@ type Props = {
 
 const UserContextProvider = ({ children }: Props): JSX.Element => {
   const [user, setUser] = React.useState<LoggedInUser | null>(null)
-  const [token, setToken] = React.useState<string | null>(null)
+  const [token, setToken] = React.useState<string | undefined>(undefined)
 
   const value = useMemo(
     () => ({ user, setUser, token, setToken }),

@@ -4,8 +4,8 @@ import React, { Dispatch, SetStateAction } from "react"
 type IUserContext = {
   user: LoggedInUser | null
   setUser: Dispatch<SetStateAction<LoggedInUser | null>>
-  token: string | null
-  setToken: Dispatch<SetStateAction<string | null>>
+  token: string | undefined
+  setToken: Dispatch<SetStateAction<string | undefined>>
 }
 
 const initialDefaultState: IUserContext = {
