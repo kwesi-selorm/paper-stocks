@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Form, message, Modal, Select, Spin, InputNumber } from "antd"
 import {
+  GetMarketStateResponse,
   ListedStock,
   MarketState,
   NewStockInitialInputType
@@ -25,7 +26,9 @@ type SelectOptionType = {
 
 type Props = {
   refetch: () => void
-  refetchMarketState: () => Promise<QueryObserverResult<any>>
+  refetchMarketState: () => Promise<
+    QueryObserverResult<GetMarketStateResponse | undefined>
+  >
 }
 
 const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
