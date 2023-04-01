@@ -1,7 +1,10 @@
 import { apiUrl } from "@/utils/constants"
 import axios from "axios"
+import { ListedStock } from "@/utils/types"
 
-export default async function getListedStocks() {
+export default async function getListedStocks(): Promise<
+  ListedStock[] | undefined
+> {
   const axiosConfig = {
     method: "GET",
     url: `${apiUrl}/stocks/nasdaq/all`,
@@ -10,5 +13,5 @@ export default async function getListedStocks() {
     }
   }
   const response = await axios.request(axiosConfig)
-  return await response.data
+  return await response.data.listedStocks
 }

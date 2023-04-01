@@ -1,7 +1,12 @@
 import React, { useContext, useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
 import { Button, Divider, message, Spin } from "antd"
-import { Asset, AssetTableRecord } from "@/utils/types"
+import {
+  Asset,
+  AssetTableRecord,
+  GetAssetsResponse,
+  LoggedInUser
+} from "@/utils/types"
 import { useRouter } from "next/router"
 import styles from "../../styles/pages/Assets.module.css"
 import AssetsTable from "@/components/data-display/AssetsTable"
@@ -22,22 +27,19 @@ import getMarketState from "@/api/get-market-state"
 const AssetsPage: React.FC = () => {
   const router = useRouter()
   const { userId } = router.query
-  const id = userId as string
+  const id = userId
   const { user, setUser, token, setToken } = useContext(UserContext)
   const { modalId } = useContext(ModalContext)
   const { asset, setMarketState } = useContext(AssetContext)
+  const [assets, setAssets] = useState<GetAssetsResponse[]>([])
+  const [tableData, setTableData] = useState<AssetTableRecord[]>([])
 
-  // Assets
-  const { error, isLoading, isError, refetch } = useQuery(
+  // ASSETS
+  const { data, error, isLoading, isError, refetch } = useQuery(
     ["assets", id, token],
     async () => {
-      if (token == null) return
-      getAssets(id, token).then((data) => {
-        if (data === undefined) {
-          return
-        }
-        setAssets(data)
-      })
+      if (id === undefined || token == null) return
+      return getAssets(id, token)
     },
     {
       retry: 1,
@@ -46,7 +48,14 @@ const AssetsPage: React.FC = () => {
     }
   )
 
-  //Market state
+  useEffect(() => {
+    if (data === undefined) {
+      return
+    }
+    setAssets(data)
+  }, [data])
+
+  //MARKET STATE
   const { refetch: refetchMarketState } = useQuery(
     ["market-state", asset],
     async () => await getMarketState(asset?.symbol),
@@ -62,12 +71,10 @@ const AssetsPage: React.FC = () => {
     }
   )
 
-  const [assets, setAssets] = useState<Asset[]>([])
-  const [tableData, setTableData] = useState<AssetTableRecord[]>([])
-
   useEffect(() => {
-    const item = window.localStorage.getItem("user") as string
-    const storedUser = JSON.parse(item)
+    const item = window.localStorage.getItem("user")
+    if (item == null) return
+    const storedUser: LoggedInUser = JSON.parse(item)
     setUser(storedUser)
     setToken(storedUser.token)
   }, [])
@@ -154,7 +161,6 @@ const AssetsPage: React.FC = () => {
       >
         Sign out
       </Button>
-      {/*</Link>*/}
     </div>
   )
 }

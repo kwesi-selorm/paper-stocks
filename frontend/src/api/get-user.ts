@@ -3,9 +3,16 @@ import axios from "axios"
 import { LoggedInUser } from "@/utils/types"
 
 export default async function getUser(
-  userId: string | null,
-  token: string | null
+  id: string | string[],
+  token: string
 ): Promise<LoggedInUser | undefined> {
+  let userId: string
+  if (typeof id === "object") {
+    userId = id[0]
+  } else {
+    userId = id
+  }
+
   const axiosConfig = {
     headers: {
       "Content-Type": "application/json",

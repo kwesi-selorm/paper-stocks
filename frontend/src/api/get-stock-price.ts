@@ -1,12 +1,18 @@
 import { apiUrl } from "@/utils/constants"
 import axios from "axios"
+import { GetStockPriceResponse } from "@/utils/types"
 
 export default async function getStockPrice(
-  userId: string,
-  token: string | null,
+  id: string | string[],
+  token: string,
   symbols: string[]
-) {
-  if (!token) return
+): Promise<GetStockPriceResponse[] | undefined> {
+  let userId: string
+  if (typeof id === "object") {
+    userId = id[0]
+  } else {
+    userId = id
+  }
 
   const axiosConfig = {
     data: { symbols },

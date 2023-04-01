@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Form, message, Modal, Select, Spin, InputNumber } from "antd"
-import { ListedStock, NewStockInitialInputType } from "@/utils/types"
+import {
+  ListedStock,
+  MarketState,
+  NewStockInitialInputType
+} from "@/utils/types"
 import { QueryObserverResult, useQuery } from "react-query"
 import getListedStocks from "@/api/get-listed-stocks"
 import { AxiosError } from "axios"
@@ -27,27 +31,42 @@ type Props = {
 const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
   const router = useRouter()
   const { userId } = router.query
-  const id = userId as string
+  const id = userId
+
   const { token } = useContext(UserContext)
   const { marketState, setMarketState } = useContext(AssetContext)
+  const { setModalId, open, setOpen } = useContext(ModalContext)
+  const { setUser } = useContext(UserContext)
 
-  // Listed stocks
-  const { error, isLoading, isError } = useQuery(
-    ["listed-stocks"],
-    getListedStocks,
-    {
-      onSuccess: (data) => {
-        if (data) {
-          setListedStocks(data.listedStocks)
-        }
-      }
+  const [listedStocks, setListedStocks] = useState<Array<ListedStock>>([])
+  const [lastPrice, setLastPrice] = useState<number>(0)
+  const [amountInvested, setAmountInvested] = useState<number>(3000)
+
+  const [values, setValues] =
+    useState<NewStockInitialInputType>(newStockInitialInput)
+
+  // LISTED STOCKS
+  const {
+    data: listedStocksData,
+    error,
+    isLoading,
+    isError
+  } = useQuery(["listed-stocks"], () => getListedStocks())
+
+  useEffect(() => {
+    if (listedStocksData === undefined) {
+      return
     }
-  )
+    setListedStocks(listedStocksData)
+  }, [listedStocksData])
 
-  //User
+  // USER
   const { refetch: refetchUser } = useQuery(
     ["user", id, token],
-    () => getUser(id, token),
+    () => {
+      if (id === undefined || token === undefined) return
+      return getUser(id, token)
+    },
     {
       enabled: false,
       refetchOnWindowFocus: false,
@@ -56,17 +75,18 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     }
   )
 
-  const [values, setValues] =
-    useState<NewStockInitialInputType>(newStockInitialInput)
+  // STOCK PRICE
+  const {
+    data: stockPriceData,
+    isError: isStockPriceError,
+    error: stockPriceError,
+    refetch: refetchStockPrice
+  } = useQuery(["get-stock-price", values.symbol, token, id], () => {
+    if (values.symbol === "" || token === undefined || id === undefined) return
+    return getStockPrice(id, token, [values.symbol])
+  })
 
-  const { setModalId, open, setOpen } = useContext(ModalContext)
-  const { setUser } = useContext(UserContext)
-  const [listedStocks, setListedStocks] = useState<Array<ListedStock>>([])
-
-  const [lastPrice, setLastPrice] = useState<number>(0)
-  const [amountInvested, setAmountInvested] = useState<number>(3000)
-
-  const stockOptions: SelectOptionType[] = listedStocks.map((listedStock) => {
+  const stockOptions: SelectOptionType[] = listedStocks?.map((listedStock) => {
     return {
       value: listedStock.symbol,
       label: listedStock.name
@@ -80,28 +100,29 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
 
   useEffect(() => {
     refetchMarketState().then((res) => {
-      if (res.data === undefined) return
-      setMarketState(res.data.marketState)
+      if (res?.data === undefined) return
+      setMarketState(res?.data?.marketState)
+    })
+
+    refetchStockPrice().then((res) => {
+      if (res?.data === undefined) return
+      setLastPrice(res?.data[0]?.price ?? 0)
     })
   }, [values.symbol])
 
-  async function fetchStockPrice() {
-    if (!values.symbol) return
-    getStockPrice(id, token, [values.symbol]).then((data) => {
-      if (data) {
-        setLastPrice(Number(data[0].price) ?? 0)
-      }
-    })
-  }
+  useEffect(() => {
+    if (stockPriceData === undefined) return
+    setLastPrice(stockPriceData[0]?.price)
+  }, [stockPriceData])
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
   ) {
     e.preventDefault()
-    // console.log({ ...values, amountInvested })
     try {
+      if (token === undefined || id === undefined) return
       await buyAsset({ ...values, amountInvested }, id, token)
-      await refetch()
+      refetch()
       const returnedUser = refetchUser()
       if (!returnedUser) return
       refetchUser()
@@ -136,9 +157,24 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
 
   if (isError) {
     if (error instanceof AxiosError) {
-      message.error(error?.response?.data.message).then()
+      message
+        .error(
+          "Error getting NASDAQ stocks list: " + error?.response?.data.message
+        )
+        .then()
     }
     message.error(JSON.stringify(error)).then()
+  }
+
+  if (isStockPriceError) {
+    if (stockPriceError instanceof AxiosError) {
+      message.error(stockPriceError?.response?.data.message).then()
+    }
+    message
+      .error(
+        "Error getting the stock price: " + JSON.stringify(stockPriceError)
+      )
+      .then()
   }
 
   return (
@@ -148,7 +184,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState !== "OPEN",
+        disabled: marketState !== MarketState.OPEN,
         htmlType: "submit",
         onClick: handleSubmit
       }}
@@ -169,12 +205,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               setValues({
                 ...values,
                 symbol: value,
-                name: (option as SelectOptionType).label
-              })
-              getStockPrice(id, token, [value]).then((data) => {
-                if (data) {
-                  setLastPrice(Number(data[0].price) ?? 0)
-                }
+                name: (option as SelectOptionType)?.label
               })
             }}
             options={stockOptions}
@@ -199,7 +230,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               style: "currency",
               currency: "USD"
             })}{" "}
-            <ReloadButton function={fetchStockPrice} />{" "}
+            <ReloadButton function={refetchStockPrice} />{" "}
             {marketState !== "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (

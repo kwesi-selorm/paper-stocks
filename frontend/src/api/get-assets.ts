@@ -1,13 +1,20 @@
 import { apiUrl } from "@/utils/constants"
 import axios from "axios"
+import { GetAssetsResponse } from "@/utils/types"
 
-export async function getAssets(userId: string, token: string) {
-  if (!userId) {
-    return
+export async function getAssets(
+  id: string | string[],
+  token: string
+): Promise<GetAssetsResponse[] | undefined> {
+  let userId: string
+  if (typeof id === "object") {
+    userId = id[0]
+  } else {
+    userId = id
   }
   const axiosConfig = {
     method: "GET",
-    url: `${apiUrl}/users/get-assets/${userId}`,
+    url: `${apiUrl}/assets/get-assets/${userId}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`

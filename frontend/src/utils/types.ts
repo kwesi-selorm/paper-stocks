@@ -29,6 +29,23 @@ export interface AssetTableRecord {
   returnPercent: string
 }
 
+export interface GetAssetsResponse {
+  _id: string
+  symbol: string
+  name: string
+  position: number
+  amountInvested: number
+  averagePrice: number
+  userId: string
+  __v: number
+  marketPrice: number
+}
+
+export interface GetStockPriceResponse {
+  symbol: string
+  price: number
+}
+
 export type LoggedInUser = {
   id: string
   username: string
@@ -47,8 +64,10 @@ export type ListedStock = {
 }
 
 export enum MarketState {
+  PRE = "PRE",
   OPEN = "OPEN",
-  CLOSED = "CLOSED"
+  CLOSED = "CLOSED",
+  POST = "POST"
 }
 
 export type NewStockInitialInputType = {

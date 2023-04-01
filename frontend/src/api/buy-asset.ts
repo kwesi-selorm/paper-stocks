@@ -10,10 +10,15 @@ type Data = {
 
 export default async function buyAsset(
   data: Data,
-  userId: string | null,
-  token: string | null
+  id: string | string[],
+  token: string
 ) {
-  if (!userId || !token) return
+  let userId: string
+  if (typeof id === "object") {
+    userId = id[0]
+  } else {
+    userId = id
+  }
 
   const axiosConfig = {
     headers: {
