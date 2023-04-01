@@ -1,11 +1,15 @@
-import { Asset, AssetTableRecord, LoggedInUser } from "@/utils/types"
+import {
+  AssetTableRecord,
+  GetAssetsResponse,
+  LoggedInUser
+} from "@/utils/types"
 import React, { useEffect } from "react"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import styles from "../styles/components/CashDetails.module.css"
 import { Divider } from "antd"
 
 type RowProps = {
-  assets: Asset[]
+  assets: GetAssetsResponse[]
   user: LoggedInUser
   setTableData: (tableData: AssetTableRecord[]) => void
 }
