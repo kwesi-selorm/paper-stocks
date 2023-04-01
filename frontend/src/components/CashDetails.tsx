@@ -53,6 +53,7 @@ const CashDetails: React.FC<RowProps> = ({ assets, user, setTableData }) => {
       }
     })
     setTableData(tableDataInput)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assets])
 
   useEffect(() => {

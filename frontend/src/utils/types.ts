@@ -46,6 +46,10 @@ export interface GetStockPriceResponse {
   price: number
 }
 
+export interface GetMarketStateResponse {
+  marketState: MarketState
+}
+
 export type LoggedInUser = {
   id: string
   username: string

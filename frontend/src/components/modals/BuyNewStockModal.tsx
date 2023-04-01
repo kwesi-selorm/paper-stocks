@@ -108,6 +108,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       if (res?.data === undefined) return
       setLastPrice(res?.data[0]?.price ?? 0)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values.symbol])
 
   useEffect(() => {

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
 import { Button, Divider, message, Spin } from "antd"
 import {
-  Asset,
   AssetTableRecord,
   GetAssetsResponse,
   LoggedInUser
@@ -77,6 +76,7 @@ const AssetsPage: React.FC = () => {
     const storedUser: LoggedInUser = JSON.parse(item)
     setUser(storedUser)
     setToken(storedUser.token)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function handleSignOut() {
