@@ -12,5 +12,8 @@
     "react",
     "@typescript-eslint",
     "@typescript-eslint/eslint-plugin"
-  ]
+  ],
+  "rules": {
+    "no-extra-boolean-cast": "off"
+  }
 }
