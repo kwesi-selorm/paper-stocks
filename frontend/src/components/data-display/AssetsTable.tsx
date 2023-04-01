@@ -1,4 +1,4 @@
-import { Asset, AssetTableRecord } from "@/utils/types"
+import { AssetTableRecord, GetAssetsResponse } from "@/utils/types"
 import React, { useCallback, useContext } from "react"
 import styles from "../../styles/components/AssetsTable.module.css"
 import { Table, Button } from "antd"
@@ -8,7 +8,7 @@ import ReloadButton from "@/components/ReloadButton"
 import AssetContext from "@/contexts/asset-context/asset-context"
 
 type Props = {
-  assets: Asset[]
+  assets: GetAssetsResponse[]
   refetch: () => void
   tableData: AssetTableRecord[]
 }
