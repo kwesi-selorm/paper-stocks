@@ -2,7 +2,16 @@ import axios from "axios"
 import { apiUrl } from "@/utils/constants"
 import { SignInInput } from "@/utils/types"
 
-export default async function signIn(input: SignInInput) {
+interface SignInResponse {
+  id: string
+  username: string
+  token: string
+  buyingPower: number
+}
+
+export default async function signIn(
+  input: SignInInput
+): Promise<SignInResponse | undefined> {
   const axiosConfig = {
     method: "POST",
     url: `${apiUrl}/users/signin`,
@@ -14,5 +23,6 @@ export default async function signIn(input: SignInInput) {
       "Content-Type": "application/json"
     }
   }
-  return await axios.request(axiosConfig)
+  const response = await axios.request(axiosConfig)
+  return await response.data
 }

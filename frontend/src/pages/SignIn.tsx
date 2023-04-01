@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 import { Button, Form, Input, message } from "antd"
 import { SignInInput } from "@/utils/types"
 import signIn from "../api/signin"
@@ -9,44 +9,33 @@ import ButtonsRow from "@/components/ButtonsRow"
 import UserContext from "@/contexts/user-context/user-context"
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai"
 
-const initialState = {
+const initialState: SignInInput = {
   username: "",
   password: ""
 }
 
 export const SignInPage: React.FC = () => {
   const [input, setInput] = useState<SignInInput>(initialState)
-  const { user, setUser } = useContext(UserContext)
-  const [isError, setIsError] = useState(false)
+  const { setUser } = useContext(UserContext)
   const router = useRouter()
-
-  useEffect(() => {
-    if (user != null && !isError) {
-      setUser(user)
-      localStorage.setItem("user", JSON.stringify(user))
-      router.push(`/assets/${user.id}`).then()
-      message.success("Logged in successfully").then()
-    }
-  }, [isError, user])
 
   async function handleSubmit() {
     try {
-      const res = await signIn(input)
-      const data = await res.data
+      const data = await signIn(input)
+      if (data === undefined) {
+        message.error("No user data returned for your provided credentials")
+        return
+      }
       setUser(data)
       window.localStorage.setItem("user", JSON.stringify(data))
+      await router.push(`/assets/${data.id}`)
+      await message.success("Logged in successfully")
     } catch (error: any) {
-      setIsError(true)
       if (error?.response?.status === 401) {
         return message.error("Invalid username or password")
       }
       return message.error(error?.response?.data?.message)
     }
-    setIsError(false)
-  }
-
-  if (isError) {
-    router.push("/signin").then()
   }
 
   return (
@@ -68,10 +57,24 @@ export const SignInPage: React.FC = () => {
         rules={[
           { required: true, message: "Please provide your password" },
           {
-            type: "string",
-            min: 8,
-            message:
-              "Password must be at least 8 characters: 1 uppercase, 1 lowercase, 1 number, and 1 special character"
+            pattern: /.{8,}/,
+            message: "Password must be at least 8 characters long"
+          },
+          {
+            pattern: /[A-Z]/,
+            message: "Password must contain at least one uppercase letter"
+          },
+          {
+            pattern: /[a-z]/,
+            message: "Password must contain at least one lowercase letter"
+          },
+          {
+            pattern: /[0-9]/,
+            message: "Password must contain at least one number"
+          },
+          {
+            pattern: /[!@#$%^&*]/,
+            message: "Password must contain at least one special character"
           }
         ]}
       >
