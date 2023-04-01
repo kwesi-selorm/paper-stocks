@@ -20,7 +20,7 @@ const AssetContextProvider: React.FC<Props> = ({ children }) => {
       marketState,
       setMarketState
     }
-  }, [asset, setAsset, lastPrice, setLastPrice, marketState, setMarketState])
+  }, [asset, lastPrice, marketState])
 
   return <AssetContext.Provider value={value}>{children}</AssetContext.Provider>
 }
