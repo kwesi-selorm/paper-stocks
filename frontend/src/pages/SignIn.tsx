@@ -8,6 +8,7 @@ import Link from "next/link"
 import ButtonsRow from "@/components/ButtonsRow"
 import UserContext from "@/contexts/user-context/user-context"
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai"
+import { SignInInputPatternRules } from "@/utils/constants"
 
 const initialState: SignInInput = {
   username: "",
@@ -56,26 +57,7 @@ export const SignInPage: React.FC = () => {
         name="password"
         rules={[
           { required: true, message: "Please provide your password" },
-          {
-            pattern: /.{8,}/,
-            message: "Password must be at least 8 characters long"
-          },
-          {
-            pattern: /[A-Z]/,
-            message: "Password must contain at least one uppercase letter"
-          },
-          {
-            pattern: /[a-z]/,
-            message: "Password must contain at least one lowercase letter"
-          },
-          {
-            pattern: /[0-9]/,
-            message: "Password must contain at least one number"
-          },
-          {
-            pattern: /[!@#$%^&*]/,
-            message: "Password must contain at least one special character"
-          }
+          ...SignInInputPatternRules
         ]}
       >
         <Input.Password
