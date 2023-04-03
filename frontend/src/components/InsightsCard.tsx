@@ -46,9 +46,11 @@ const mockInsightProp: StockInsight = {
   }
 }
 
-const lastPriceProp = 170
+const lastPriceProp = 194
 
 const InsightsCard = (): JSX.Element => {
+  const { companyName, sector, summaries, recommendation } = mockInsightProp
+
   const [selectedOutlook, setSelectedOutlook] = React.useState<{
     name: string
     id: string
@@ -56,7 +58,10 @@ const InsightsCard = (): JSX.Element => {
   const [activeOutlook, setActiveOutlook] = React.useState<Outlook | undefined>(
     undefined
   )
-  const { companyName, sector, summaries, recommendation } = mockInsightProp
+  const targetPriceDifference =
+    recommendation?.targetPrice !== undefined
+      ? ((lastPriceProp - recommendation?.targetPrice) * 100) / lastPriceProp
+      : undefined
 
   useEffect(() => {
     if (mockInsightProp.outlooks === undefined) return
@@ -82,6 +87,16 @@ const InsightsCard = (): JSX.Element => {
     setSelectedOutlook(outlook)
   }
 
+  function getPercentageDifferenceStyle() {
+    if (targetPriceDifference === undefined) {
+      return styles[""]
+    }
+    if (targetPriceDifference >= 0) {
+      return styles["positive"]
+    }
+    return styles["negative"]
+  }
+
   return (
     <section className={styles["container"]}>
       <h2>INSIGHTS</h2>
@@ -95,14 +110,15 @@ const InsightsCard = (): JSX.Element => {
 
       {recommendation !== undefined && <h3>Recommendations</h3>}
       {recommendation?.targetPrice !== undefined && (
-        <p>
-          Target price: ${recommendation?.targetPrice}(
-          {(
-            ((lastPriceProp - recommendation?.targetPrice) * 100) /
-            lastPriceProp
-          ).toFixed(1)}
-          %)
-        </p>
+        <>
+          <p>
+            Target price: ${recommendation?.targetPrice} (
+            <span className={getPercentageDifferenceStyle()}>
+              {targetPriceDifference?.toFixed(1)}%
+            </span>
+            )
+          </p>
+        </>
       )}
       {recommendation?.provider !== undefined && (
         <p>Provider: {recommendation?.provider}</p>
