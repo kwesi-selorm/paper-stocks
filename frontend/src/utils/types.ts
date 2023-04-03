@@ -93,3 +93,35 @@ export type SignUpInput = {
   confirmPassword: string
   passwordClue: string
 }
+
+export type StockInsight = {
+	companyName?: string,
+	sector?: string,
+	recommendation?: {
+		targetPrice?: number,
+		provider?: string,
+		rating?: number
+	},
+	summaries: {
+		bullishSummary?: string,
+		bearishSummary?: string
+	},
+	outlooks?:
+	{
+		shortTermOutlook?: {
+			score?: number,
+			scoreDescription?: string,
+			direction?: string
+		},
+		intermediateTermOutlook?: {
+			score?: number,
+            scoreDescription?: string,
+            direction?: string
+		},
+		longTermOutlook?: {
+            score?: number,
+            scoreDescription?: string,
+            direction?: string
+        }
+	}
+}

@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
 import ModalContextProvider from "@/contexts/modal-context/ModalContextProvider"
 import AssetContextProvider from "@/contexts/asset-context/AssetContextProvider"
+import { DevSupport } from "@react-buddy/ide-toolbox-next"
+import { ComponentPreviews, useInitial } from "@/components/dev"
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient()
@@ -15,7 +17,12 @@ export default function App({ Component, pageProps }: AppProps) {
       <UserContextProvider>
         <ModalContextProvider>
           <AssetContextProvider>
-            <Component {...pageProps} />
+            <DevSupport
+              ComponentPreviews={ComponentPreviews}
+              useInitialHook={useInitial}
+            >
+              <Component {...pageProps} />
+            </DevSupport>
           </AssetContextProvider>
         </ModalContextProvider>
       </UserContextProvider>

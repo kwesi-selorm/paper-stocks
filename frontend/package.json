@@ -22,7 +22,9 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "react-query": "^3.39.3",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "@react-buddy/ide-toolbox-next": "^2.4.0",
+    "@react-buddy/palette-antd": "^5.0.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

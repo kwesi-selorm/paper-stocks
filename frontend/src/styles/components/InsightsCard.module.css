@@ -1,0 +1,18 @@
+.container {
+	text-align: center;
+}
+
+.buttons-row {
+	border: 1px solid black;
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+	margin: 1.5em auto 3px;
+	width: fit-content;
+}
+
+.buttons-row button {
+	border-radius: 0;
+	font-weight: 600;
+}
+
