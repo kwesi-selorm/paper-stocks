@@ -1,6 +1,7 @@
 import { apiUrl } from "@/utils/constants"
 import axios from "axios"
 import { GetStockPriceResponse } from "@/utils/types"
+import { symbol } from "prop-types"
 
 export default async function getStockPrice(
   id: string | string[],
@@ -13,6 +14,8 @@ export default async function getStockPrice(
   } else {
     userId = id
   }
+
+  if (symbols.length === 1 && (symbols[0] === "" || symbols[0] == null)) return
 
   const axiosConfig = {
     data: { symbols },

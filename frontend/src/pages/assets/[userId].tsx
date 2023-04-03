@@ -55,20 +55,20 @@ const AssetsPage: React.FC = () => {
   }, [data])
 
   //MARKET STATE
-  const { refetch: refetchMarketState } = useQuery(
+  const { data: marketStateData, refetch: refetchMarketState } = useQuery(
     ["market-state", asset],
     async () => await getMarketState(asset?.symbol),
     {
-      enabled: false,
-      onSuccess: (data) => {
-        if (data === undefined) {
-          return
-        }
-        setMarketState(data.marketState)
-      },
       retry: 1
     }
   )
+
+  useEffect(() => {
+    if (marketStateData === undefined) {
+      return
+    }
+    setMarketState(marketStateData.marketState)
+  }, [marketStateData])
 
   useEffect(() => {
     const item = window.localStorage.getItem("user")

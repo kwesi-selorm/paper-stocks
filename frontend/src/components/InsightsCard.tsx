@@ -1,7 +1,11 @@
-import { StockInsight } from "@/utils/types"
-import { Button } from "antd"
+import { StockInsights } from "@/utils/types"
+import { Button, message, Spin } from "antd"
 import React, { useEffect } from "react"
 import styles from "../styles/components/InsightsCard.module.css"
+import { mockInsight } from "@/components/mock-data"
+import { useQuery } from "react-query"
+import getStockInsights from "@/api/get-stock-insights"
+import { AxiosError } from "axios"
 
 const outlooks = [
   { name: "Short-term", id: "7757CC06-1A11-41C0-BAB5-4DC3E70C3387" },
@@ -15,42 +19,12 @@ type Outlook = {
   direction?: string
 }
 
-const mockInsightProp: StockInsight = {
-  companyName: "Mock Company",
-  sector: "Technology",
-  summaries: {
-    bearishSummary: "Bearish Summary",
-    bullishSummary: "Bullish Summary"
-  },
-  outlooks: {
-    shortTermOutlook: {
-      score: 1,
-      scoreDescription: "Low",
-      direction: "Up"
-    },
-    intermediateTermOutlook: {
-      score: 3,
-      scoreDescription: "Pathway",
-      direction: "Down"
-    },
-    longTermOutlook: {
-      score: 2,
-      scoreDescription: "Medium",
-      direction: "Down"
-    }
-  },
-  recommendation: {
-    targetPrice: 180,
-    provider: "Top Holdings",
-    rating: 1
-  }
+interface Props {
+  symbol: string
+  lastPrice: number
 }
 
-const lastPriceProp = 194
-
-const InsightsCard = (): JSX.Element => {
-  const { companyName, sector, summaries, recommendation } = mockInsightProp
-
+const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
   const [selectedOutlook, setSelectedOutlook] = React.useState<{
     name: string
     id: string
@@ -58,15 +32,35 @@ const InsightsCard = (): JSX.Element => {
   const [activeOutlook, setActiveOutlook] = React.useState<Outlook | undefined>(
     undefined
   )
+  const [stockInsights, setStockInsights] =
+    React.useState<StockInsights>(mockInsight)
+
+  const { data, isLoading, isError, error } = useQuery(
+    ["stock-insights", symbol],
+    () => getStockInsights(symbol),
+    {
+      retry: false
+    }
+  )
+  const { companyName, sector, summaries, recommendation } = stockInsights
+
   const targetPriceDifference =
     recommendation?.targetPrice !== undefined
-      ? ((lastPriceProp - recommendation?.targetPrice) * 100) / lastPriceProp
+      ? ((recommendation?.targetPrice - lastPrice) * 100) / lastPrice
       : undefined
 
+  // Handling stock insights
   useEffect(() => {
-    if (mockInsightProp.outlooks === undefined) return
+    if (data === undefined) {
+      return
+    }
+    setStockInsights(data)
+  }, [data])
+
+  useEffect(() => {
+    if (stockInsights?.outlooks === undefined) return
     const { shortTermOutlook, intermediateTermOutlook, longTermOutlook } =
-      mockInsightProp.outlooks
+      stockInsights.outlooks
 
     switch (selectedOutlook.name) {
       case "Short-term":
@@ -97,18 +91,31 @@ const InsightsCard = (): JSX.Element => {
     return styles["negative"]
   }
 
+  if (isLoading) return <Spin />
+
+  if (isError) {
+    if (error instanceof AxiosError) {
+      // message.error(error?.response?.data?.message).then()
+      return null
+    }
+  }
+
   return (
     <section className={styles["container"]}>
       <h2>INSIGHTS</h2>
-      <br />
 
       <p>
         {companyName}
-        {sector !== undefined ? ` (${mockInsightProp.sector})` : null}
+        {sector !== undefined ? ` (${stockInsights?.sector})` : null}
       </p>
-      <br />
 
-      {recommendation !== undefined && <h3>Recommendations</h3>}
+      {recommendation !== undefined &&
+        Object.keys(recommendation).length > 0 && (
+          <>
+            <br />
+            <h3>Recommendations</h3>
+          </>
+        )}
       {recommendation?.targetPrice !== undefined && (
         <>
           <p>
@@ -126,18 +133,27 @@ const InsightsCard = (): JSX.Element => {
       {recommendation?.rating !== undefined && (
         <p>Rating: {recommendation?.rating}</p>
       )}
-      <br />
 
-      {summaries !== undefined && <h3>Summaries</h3>}
-      {summaries.bearishSummary !== undefined && (
-        <p>Bullish summary: {mockInsightProp.summaries.bullishSummary}</p>
+      {summaries !== undefined && Object.keys(summaries).length > 0 && (
+        <>
+          <br />
+          <h3>Summaries</h3>
+        </>
       )}
       {summaries.bearishSummary !== undefined && (
-        <p>Bearish summary: {summaries.bearishSummary}</p>
+        <p>
+          <b>Bullish summary</b>: {stockInsights?.summaries?.bullishSummary}
+        </p>
+      )}
+      <br />
+      {summaries.bearishSummary !== undefined && (
+        <p>
+          <b>Bearish summary</b>: {summaries?.bearishSummary}
+        </p>
       )}
       <br />
 
-      {mockInsightProp.outlooks !== undefined && <h3>Outlooks</h3>}
+      {stockInsights?.outlooks !== undefined && <h3>Outlooks</h3>}
       <div className={styles["buttons-row"]}>
         {outlooks.map((outlook) => (
           <Button
@@ -150,16 +166,17 @@ const InsightsCard = (): JSX.Element => {
           </Button>
         ))}
       </div>
-      {activeOutlook !== undefined && (
+
+      {activeOutlook !== undefined && Object.keys(activeOutlook).length > 0 && (
         <section className={styles["outlook-details"]}>
           <div className={styles["outlook-score"]}>
-            Score: {activeOutlook.score}
+            Score: {activeOutlook?.score}
           </div>
           <div className={styles["outlook-score-description"]}>
             Score description: {activeOutlook?.scoreDescription}
           </div>
           <div className={styles["outlook-direction"]}>
-            Direction: {activeOutlook.direction}
+            Direction: {activeOutlook?.direction}
           </div>
         </section>
       )}

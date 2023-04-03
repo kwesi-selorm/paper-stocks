@@ -18,6 +18,7 @@ import ReloadButton from "@/components/ReloadButton"
 import buyAsset from "@/api/buy-asset"
 import getUser from "@/api/get-user"
 import AssetContext from "@/contexts/asset-context/asset-context"
+import InsightsCard from "@/components/InsightsCard"
 
 type SelectOptionType = {
   label: string
@@ -47,6 +48,10 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
 
   const [values, setValues] =
     useState<NewStockInitialInputType>(newStockInitialInput)
+  const isMarketClosed =
+    marketState === MarketState.PRE ||
+    marketState === MarketState.CLOSED ||
+    marketState === MarketState.POST
 
   // LISTED STOCKS
   const {
@@ -84,10 +89,17 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     isError: isStockPriceError,
     error: stockPriceError,
     refetch: refetchStockPrice
-  } = useQuery(["get-stock-price", values.symbol, token, id], () => {
-    if (values.symbol === "" || token === undefined || id === undefined) return
-    return getStockPrice(id, token, [values.symbol])
-  })
+  } = useQuery(
+    ["get-stock-price", values.symbol, token, id],
+    () => {
+      if (values.symbol === "" || token === undefined || id === undefined)
+        return
+      return getStockPrice(id, token, [values.symbol])
+    },
+    {
+      retry: false
+    }
+  )
 
   const stockOptions: SelectOptionType[] = listedStocks?.map((listedStock) => {
     return {
@@ -102,6 +114,8 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
   )
 
   useEffect(() => {
+    if (values.symbol === "" || values.symbol == null) return
+
     refetchMarketState().then((res) => {
       if (res?.data === undefined) return
       setMarketState(res?.data?.marketState)
@@ -174,11 +188,6 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     if (stockPriceError instanceof AxiosError) {
       message.error(stockPriceError?.response?.data.message).then()
     }
-    message
-      .error(
-        "Error getting the stock price: " + JSON.stringify(stockPriceError)
-      )
-      .then()
   }
 
   return (
@@ -186,9 +195,8 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       centered={true}
       keyboard={true}
       mask={true}
-      maskClosable={true}
       okButtonProps={{
-        disabled: marketState !== MarketState.OPEN,
+        disabled: isMarketClosed,
         htmlType: "submit",
         onClick: handleSubmit
       }}
@@ -235,7 +243,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               currency: "USD"
             })}{" "}
             <ReloadButton function={refetchStockPrice} />{" "}
-            {marketState !== "OPEN" ? (
+            {marketState === "REGULAR" || marketState === "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
@@ -252,6 +260,10 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
           </b>
         </Form.Item>
       </Form>
+
+      {Boolean(values.symbol) && Boolean(lastPrice) && (
+        <InsightsCard symbol={values.symbol} lastPrice={lastPrice} />
+      )}
     </Modal>
   )
 }

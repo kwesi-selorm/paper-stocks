@@ -70,6 +70,7 @@ export type ListedStock = {
 export enum MarketState {
   PRE = "PRE",
   OPEN = "OPEN",
+  REGULAR = "REGULAR",
   CLOSED = "CLOSED",
   POST = "POST"
 }
@@ -94,34 +95,33 @@ export type SignUpInput = {
   passwordClue: string
 }
 
-export type StockInsight = {
-	companyName?: string,
-	sector?: string,
-	recommendation?: {
-		targetPrice?: number,
-		provider?: string,
-		rating?: number
-	},
-	summaries: {
-		bullishSummary?: string,
-		bearishSummary?: string
-	},
-	outlooks?:
-	{
-		shortTermOutlook?: {
-			score?: number,
-			scoreDescription?: string,
-			direction?: string
-		},
-		intermediateTermOutlook?: {
-			score?: number,
-            scoreDescription?: string,
-            direction?: string
-		},
-		longTermOutlook?: {
-            score?: number,
-            scoreDescription?: string,
-            direction?: string
-        }
-	}
+export type StockInsights = {
+  companyName?: string
+  sector?: string
+  recommendation?: {
+    targetPrice?: number
+    provider?: string
+    rating?: number
+  }
+  summaries: {
+    bullishSummary?: string
+    bearishSummary?: string
+  }
+  outlooks?: {
+    shortTermOutlook?: {
+      score?: number
+      scoreDescription?: string
+      direction?: string
+    }
+    intermediateTermOutlook?: {
+      score?: number
+      scoreDescription?: string
+      direction?: string
+    }
+    longTermOutlook?: {
+      score?: number
+      scoreDescription?: string
+      direction?: string
+    }
+  }
 }

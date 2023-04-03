@@ -21,5 +21,5 @@ export default async function sellAsset(
     }
   }
 
-  await axios.post(`${apiUrl}/users/sell-asset/${userId}`, data, axiosConfig)
+  await axios.post(`${apiUrl}/assets/sell-asset/${userId}`, data, axiosConfig)
 }

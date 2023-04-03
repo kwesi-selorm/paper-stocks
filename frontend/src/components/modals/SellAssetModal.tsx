@@ -11,6 +11,7 @@ import getUser from "@/api/get-user"
 import sellAsset from "@/api/sell-asset"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import ReloadButton from "@/components/ReloadButton"
+import { MarketState } from "@/utils/types"
 
 interface Props {
   refetchAssets: () => void
@@ -25,6 +26,10 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
   const router = useRouter()
   const { userId } = router.query
   const id = userId as string
+  const isMarketClosed =
+    marketState === MarketState.PRE ||
+    marketState === MarketState.CLOSED ||
+    marketState === MarketState.POST
 
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, asset],
@@ -44,7 +49,10 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
 
   const { refetch: refetchUser } = useQuery(
     ["user", id, token],
-    () => getUser(id, token),
+    () => {
+      if (id === undefined || token === undefined) return
+      return getUser(id, token)
+    },
     {
       enabled: false,
       refetchOnWindowFocus: false,
@@ -57,7 +65,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
   ) {
     e.preventDefault()
-    if (!asset) return
+    if (asset == null || token === undefined) return
 
     try {
       const data = {
@@ -108,7 +116,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState !== "OPEN",
+        disabled: isMarketClosed,
         onClick: handleSubmit
       }}
       open={open}
@@ -131,7 +139,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {marketState !== "OPEN" ? (
+            {marketState === "REGULAR" || marketState === "OPEN" ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>

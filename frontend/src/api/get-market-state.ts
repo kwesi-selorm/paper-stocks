@@ -1,7 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios"
 import { apiUrl } from "@/utils/constants"
+import { GetMarketStateResponse } from "@/utils/types"
 
-export default async function getMarketState(symbol: string | undefined) {
+export default async function getMarketState(
+  symbol: string | undefined
+): Promise<GetMarketStateResponse | undefined> {
   if (symbol === undefined) {
     return
   }
