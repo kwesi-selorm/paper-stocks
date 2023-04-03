@@ -10,12 +10,12 @@ const outlooks = [
 ]
 
 type Outlook = {
-  score: number
-  scoreDescription: string
-  direction: string
+  score?: number
+  scoreDescription?: string
+  direction?: string
 }
 
-const mockInsight: StockInsight = {
+const mockInsightProp: StockInsight = {
   companyName: "Mock Company",
   sector: "Technology",
   summaries: {
@@ -38,34 +38,95 @@ const mockInsight: StockInsight = {
       scoreDescription: "Medium",
       direction: "Down"
     }
+  },
+  recommendation: {
+    targetPrice: 180,
+    provider: "Top Holdings",
+    rating: 1
   }
 }
 
-const Outlooks = (): JSX.Element => {
-  const [selectedActiveOutlook, setSelectedActiveOutlook] = React.useState<{
+const lastPriceProp = 170
+
+const InsightsCard = (): JSX.Element => {
+  const [selectedOutlook, setSelectedOutlook] = React.useState<{
     name: string
     id: string
   }>(outlooks[0])
-  const [activeOutlook, setActiveOutlook] = React.useState<Outlook | null>(null)
+  const [activeOutlook, setActiveOutlook] = React.useState<Outlook | undefined>(
+    undefined
+  )
+  const { companyName, sector, summaries, recommendation } = mockInsightProp
 
   useEffect(() => {
-    if (mockInsight.outlooks === undefined) return
-    const stockOutlooks = mockInsight.outlooks
-    // const activeOutlookInput = outlooks.find(o=> mo)
-    // setActiveOutlook(mockInsight.outlooks[selectedActiveOutlook.name])
-  }, [selectedActiveOutlook])
+    if (mockInsightProp.outlooks === undefined) return
+    const { shortTermOutlook, intermediateTermOutlook, longTermOutlook } =
+      mockInsightProp.outlooks
+
+    switch (selectedOutlook.name) {
+      case "Short-term":
+        setActiveOutlook(shortTermOutlook)
+        break
+      case "Intermediate-term":
+        setActiveOutlook(intermediateTermOutlook)
+        break
+      case "Long-term":
+        setActiveOutlook(longTermOutlook)
+        break
+      default:
+        return
+    }
+  }, [selectedOutlook])
 
   function onOutlookSelect(outlook: { name: string; id: string }) {
-    setSelectedActiveOutlook(outlook)
+    setSelectedOutlook(outlook)
   }
 
   return (
-    <section>
+    <section className={styles["container"]}>
+      <h2>INSIGHTS</h2>
+      <br />
+
+      <p>
+        {companyName}
+        {sector !== undefined ? ` (${mockInsightProp.sector})` : null}
+      </p>
+      <br />
+
+      {recommendation !== undefined && <h3>Recommendations</h3>}
+      {recommendation?.targetPrice !== undefined && (
+        <p>
+          Target price: ${recommendation?.targetPrice}(
+          {(
+            ((lastPriceProp - recommendation?.targetPrice) * 100) /
+            lastPriceProp
+          ).toFixed(1)}
+          %)
+        </p>
+      )}
+      {recommendation?.provider !== undefined && (
+        <p>Provider: {recommendation?.provider}</p>
+      )}
+      {recommendation?.rating !== undefined && (
+        <p>Rating: {recommendation?.rating}</p>
+      )}
+      <br />
+
+      {summaries !== undefined && <h3>Summaries</h3>}
+      {summaries.bearishSummary !== undefined && (
+        <p>Bullish summary: {mockInsightProp.summaries.bullishSummary}</p>
+      )}
+      {summaries.bearishSummary !== undefined && (
+        <p>Bearish summary: {summaries.bearishSummary}</p>
+      )}
+      <br />
+
+      {mockInsightProp.outlooks !== undefined && <h3>Outlooks</h3>}
       <div className={styles["buttons-row"]}>
         {outlooks.map((outlook) => (
           <Button
             key={outlook.id}
-            type={outlook.id === selectedActiveOutlook.id ? "primary" : "text"}
+            type={outlook.id === selectedOutlook.id ? "primary" : "text"}
             id={outlook.id}
             onClick={() => onOutlookSelect(outlook)}
           >
@@ -73,21 +134,19 @@ const Outlooks = (): JSX.Element => {
           </Button>
         ))}
       </div>
-      <div className={styles["outlook-details"]}>
-        {/*<p>Score: {selectedActiveOutlook}</p>*/}
-      </div>
-    </section>
-  )
-}
-
-const InsightsCard = (): JSX.Element => {
-  return (
-    <section className={styles["container"]}>
-      <h3>Insights</h3>
-      <h4>{mockInsight.companyName}</h4>
-      <br />
-      <p>Industry: {mockInsight.sector}</p>
-      <Outlooks />
+      {activeOutlook !== undefined && (
+        <section className={styles["outlook-details"]}>
+          <div className={styles["outlook-score"]}>
+            Score: {activeOutlook.score}
+          </div>
+          <div className={styles["outlook-score-description"]}>
+            Score description: {activeOutlook?.scoreDescription}
+          </div>
+          <div className={styles["outlook-direction"]}>
+            Direction: {activeOutlook.direction}
+          </div>
+        </section>
+      )}
     </section>
   )
 }
