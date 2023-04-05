@@ -1,11 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
-import { Form, message, Modal, Select, Spin, InputNumber } from "antd"
-import {
-  GetMarketStateResponse,
-  ListedStock,
-  NewStockInitialInputType
-} from "@/utils/types"
-import { QueryObserverResult, useQuery } from "react-query"
+import { Form, message, Modal, Select, InputNumber } from "antd"
+import { ListedStock, NewStockInitialInputType } from "@/utils/types"
+import { useQuery } from "react-query"
 import getListedStocks from "@/api/get-listed-stocks"
 import { AxiosError } from "axios"
 import ModalContext from "@/contexts/modal-context/modal-context"
@@ -18,7 +14,9 @@ import buyAsset from "@/api/buy-asset"
 import getUser from "@/api/get-user"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import InsightsCard from "@/components/InsightsCard"
-import { checkMarketOpen } from "@/utils/stock-util"
+import { isMarketClosed } from "@/utils/stock-util"
+import SpinningLoader from "@/components/SpinningLoader"
+import getMarketState from "@/api/get-market-state"
 
 type SelectOptionType = {
   label: string
@@ -27,12 +25,9 @@ type SelectOptionType = {
 
 type Props = {
   refetch: () => void
-  refetchMarketState: () => Promise<
-    QueryObserverResult<GetMarketStateResponse | undefined>
-  >
 }
 
-const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
+const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
   const router = useRouter()
   const { userId } = router.query
   const id = userId
@@ -48,7 +43,6 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
 
   const [values, setValues] =
     useState<NewStockInitialInputType>(newStockInitialInput)
-  const isMarketClosed = checkMarketOpen(marketState)
 
   // LISTED STOCKS
   const {
@@ -101,6 +95,19 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     }
   )
 
+  //MARKET STATE
+  const { data: marketStateData, refetch: refetchMarketState } = useQuery(
+    ["market-state", values.symbol],
+    () => {
+      if (values?.symbol === undefined || values.symbol === "") return
+      return getMarketState(values.symbol)
+    },
+    {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  )
+
   const stockOptions: SelectOptionType[] = listedStocks?.map((listedStock) => {
     return {
       value: listedStock.symbol,
@@ -132,6 +139,12 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     if (stockPriceData === undefined) return
     setLastPrice(stockPriceData[0]?.price)
   }, [stockPriceData])
+
+  useEffect(() => {
+    if (marketStateData === undefined) return
+    setMarketState(marketStateData?.marketState)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketStateData])
 
   async function handleSubmit(
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
@@ -170,7 +183,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
   }
 
   if (isLoading) {
-    return <Spin />
+    return <SpinningLoader />
   }
 
   if (isError) {
@@ -196,7 +209,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       keyboard={true}
       mask={true}
       okButtonProps={{
-        disabled: isMarketClosed,
+        disabled: isMarketClosed(marketState),
         htmlType: "submit",
         onClick: handleSubmit
       }}
@@ -243,10 +256,10 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               currency: "USD"
             })}{" "}
             <ReloadButton function={refetchStockPrice} />{" "}
-            {checkMarketOpen(marketState) ? (
-              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
-            ) : (
+            {marketState === "REGULAR" || marketState === "OPEN" ? (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
+            ) : (
+              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             )}
           </>
         </Form.Item>
