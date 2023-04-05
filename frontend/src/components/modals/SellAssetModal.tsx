@@ -11,7 +11,6 @@ import getUser from "@/api/get-user"
 import sellAsset from "@/api/sell-asset"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import ReloadButton from "@/components/ReloadButton"
-import { MarketState } from "@/utils/types"
 import { checkMarketOpen } from "@/utils/stock-util"
 
 interface Props {
@@ -26,13 +25,13 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
   const [values, setValues] = React.useState({ position: 0 })
   const router = useRouter()
   const { userId } = router.query
-  const id = userId as string
+  const id = userId
   const isMarketClosed = checkMarketOpen(marketState)
 
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, asset],
     async () => {
-      if (!user || !token || !asset) return
+      if (user == null || token === undefined || asset == null) return
       return await getStockPrice(user.id, token, [asset.symbol])
     },
     {
@@ -54,8 +53,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
     {
       enabled: false,
       refetchOnWindowFocus: false,
-      retry: false,
-      retryOnMount: false
+      retry: false
     }
   )
 
@@ -63,7 +61,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
     e: React.MouseEvent<HTMLAnchorElement> & React.MouseEvent<HTMLButtonElement>
   ) {
     e.preventDefault()
-    if (asset == null || token === undefined) return
+    if (asset == null || token === undefined || id === undefined) return
 
     try {
       const data = {
@@ -74,7 +72,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
       await sellAsset(data, id, token)
       await refetchAssets()
       const returnedUser = refetchUser()
-      if (!returnedUser) return
+      if (returnedUser === undefined) return
       refetchUser().then((data) => {
         if (data.data) {
           setUser(data.data)

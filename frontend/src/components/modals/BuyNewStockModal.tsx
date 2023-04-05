@@ -3,7 +3,6 @@ import { Form, message, Modal, Select, Spin, InputNumber } from "antd"
 import {
   GetMarketStateResponse,
   ListedStock,
-  MarketState,
   NewStockInitialInputType
 } from "@/utils/types"
 import { QueryObserverResult, useQuery } from "react-query"
@@ -57,7 +56,9 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
     error,
     isLoading,
     isError
-  } = useQuery(["listed-stocks"], () => getListedStocks())
+  } = useQuery(["listed-stocks"], () => getListedStocks(), {
+    refetchOnWindowFocus: false
+  })
 
   useEffect(() => {
     if (listedStocksData === undefined) {
@@ -95,7 +96,8 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
       return getStockPrice(id, token, [values.symbol])
     },
     {
-      retry: false
+      retry: false,
+      refetchOnWindowFocus: false
     }
   )
 
