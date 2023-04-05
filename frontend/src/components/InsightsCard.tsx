@@ -1,5 +1,5 @@
 import { StockInsights } from "@/utils/types"
-import { Button, message, Spin } from "antd"
+import { Button, Spin } from "antd"
 import React, { useEffect } from "react"
 import styles from "../styles/components/InsightsCard.module.css"
 import { mockInsight } from "@/components/mock-data"
@@ -39,7 +39,8 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
     ["stock-insights", symbol],
     () => getStockInsights(symbol),
     {
-      retry: false
+      retry: false,
+      refetchOnWindowFocus: false
     }
   )
   const { companyName, sector, summaries, recommendation } = stockInsights
@@ -75,7 +76,7 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
       default:
         return
     }
-  }, [selectedOutlook])
+  }, [selectedOutlook, stockInsights.outlooks])
 
   function onOutlookSelect(outlook: { name: string; id: string }) {
     setSelectedOutlook(outlook)
