@@ -19,6 +19,7 @@ import buyAsset from "@/api/buy-asset"
 import getUser from "@/api/get-user"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import InsightsCard from "@/components/InsightsCard"
+import { checkMarketOpen } from "@/utils/stock-util"
 
 type SelectOptionType = {
   label: string
@@ -48,10 +49,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
 
   const [values, setValues] =
     useState<NewStockInitialInputType>(newStockInitialInput)
-  const isMarketClosed =
-    marketState === MarketState.PRE ||
-    marketState === MarketState.CLOSED ||
-    marketState === MarketState.POST
+  const isMarketClosed = checkMarketOpen(marketState)
 
   // LISTED STOCKS
   const {
@@ -243,7 +241,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
               currency: "USD"
             })}{" "}
             <ReloadButton function={refetchStockPrice} />{" "}
-            {marketState === "REGULAR" || marketState === "OPEN" ? (
+            {checkMarketOpen(marketState) ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>

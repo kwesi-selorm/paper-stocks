@@ -12,6 +12,7 @@ import { QueryObserverResult, useQuery } from "react-query"
 import buyAsset from "@/api/buy-asset"
 import { useRouter } from "next/router"
 import getUser from "@/api/get-user"
+import { checkMarketOpen } from "@/utils/stock-util"
 
 const initialFormValues = {
   position: 0
@@ -51,7 +52,10 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
 
   const { refetch: refetchUser } = useQuery(
     ["user", id, token],
-    () => getUser(id, token),
+    () => {
+      if (token === undefined) return
+      return getUser(id, token)
+    },
     {
       enabled: false,
       refetchOnWindowFocus: false,
@@ -93,6 +97,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       amountInvested: amountInvested
     }
     try {
+      if (token === undefined) return
       await buyAsset(data, id, token)
       await refetchAssets()
       const returnedUser = refetchUser()
@@ -158,7 +163,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {marketState !== "OPEN" ? (
+            {checkMarketOpen(marketState) ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>

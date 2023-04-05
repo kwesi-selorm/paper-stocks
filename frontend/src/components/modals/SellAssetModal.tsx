@@ -12,6 +12,7 @@ import sellAsset from "@/api/sell-asset"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import ReloadButton from "@/components/ReloadButton"
 import { MarketState } from "@/utils/types"
+import { checkMarketOpen } from "@/utils/stock-util"
 
 interface Props {
   refetchAssets: () => void
@@ -26,10 +27,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
   const router = useRouter()
   const { userId } = router.query
   const id = userId as string
-  const isMarketClosed =
-    marketState === MarketState.PRE ||
-    marketState === MarketState.CLOSED ||
-    marketState === MarketState.POST
+  const isMarketClosed = checkMarketOpen(marketState)
 
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, asset],
@@ -139,7 +137,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {marketState === "REGULAR" || marketState === "OPEN" ? (
+            {checkMarketOpen(marketState) ? (
               <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             ) : (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
