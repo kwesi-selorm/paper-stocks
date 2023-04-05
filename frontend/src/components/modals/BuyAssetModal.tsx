@@ -83,7 +83,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       message.error(error?.response?.data?.message).then()
       return null
     }
-    message.error(JSON.stringify(error)).then()
+    console.error(error)
     return null
   }
 
@@ -102,7 +102,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       await buyAsset(data, id, token)
       await refetchAssets()
       const returnedUser = refetchUser()
-      if (!returnedUser) return
+      if (returnedUser === undefined) return
       refetchUser().then((data) => {
         if (data.data !== undefined) {
           setUser(data.data)
@@ -113,7 +113,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       if (e instanceof AxiosError) {
         message.error(e?.response?.data.message)
       }
-      message.error(JSON.stringify(e.message))
+      console.error(e)
     }
     setOpen(false)
     setModalId("")

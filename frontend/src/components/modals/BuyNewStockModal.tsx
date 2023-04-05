@@ -181,7 +181,7 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
         )
         .then()
     }
-    message.error(JSON.stringify(error)).then()
+    console.error(error)
   }
 
   if (isStockPriceError) {

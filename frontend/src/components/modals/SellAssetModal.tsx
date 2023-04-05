@@ -78,11 +78,11 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
           setUser(data.data)
         }
       })
-    } catch (e: any) {
+    } catch (e) {
       if (e instanceof AxiosError) {
         message.error(e?.response?.data.message)
       }
-      message.error(JSON.stringify(e.message))
+      console.error(error)
     }
     await refetchAssets()
     setOpen(false)
