@@ -1,0 +1,28 @@
+.container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 2em;
+    justify-content: center;
+    margin-top: 30%;
+}
+
+.spinner{
+    animation: loading 1s linear infinite;
+    color: #2F58CD;
+    font-size: 0.7em;
+    font-weight: 500
+}
+
+.container p {
+    font-size: 0.5em;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0deg)
+    }
+    100% {
+        transform: rotate(359deg)
+    }
+}
