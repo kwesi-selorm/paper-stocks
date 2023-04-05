@@ -1,11 +1,13 @@
 import { StockInsights } from "@/utils/types"
-import { Button, Spin } from "antd"
+import { Button } from "antd"
 import React, { useEffect } from "react"
 import styles from "../styles/components/InsightsCard.module.css"
 import { mockInsight } from "@/components/mock-data"
 import { useQuery } from "react-query"
 import getStockInsights from "@/api/get-stock-insights"
 import { AxiosError } from "axios"
+import { isAllEmptyOutlooks } from "@/utils/stock-util"
+import SpinningLoader from "@/components/SpinningLoader"
 
 const outlooks = [
   { name: "Short-term", id: "7757CC06-1A11-41C0-BAB5-4DC3E70C3387" },
@@ -13,7 +15,7 @@ const outlooks = [
   { name: "Long-term", id: "B8434B5C-53C5-4AE5-9329-7774A89515CB" }
 ]
 
-type Outlook = {
+export type Outlook = {
   score?: number
   scoreDescription?: string
   direction?: string
@@ -92,7 +94,7 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
     return styles["negative"]
   }
 
-  if (isLoading) return <Spin />
+  if (isLoading) return <SpinningLoader />
 
   if (isError) {
     if (error instanceof AxiosError) {
@@ -105,10 +107,10 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
     <section className={styles["container"]}>
       <h2>INSIGHTS</h2>
 
-      <p>
+      <div>
         {companyName}
         {sector !== undefined ? ` (${stockInsights?.sector})` : null}
-      </p>
+      </div>
 
       {recommendation !== undefined &&
         Object.keys(recommendation).length > 0 && (
@@ -154,33 +156,39 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
       )}
       <br />
 
-      {stockInsights?.outlooks !== undefined && <h3>Outlooks</h3>}
-      <div className={styles["buttons-row"]}>
-        {outlooks.map((outlook) => (
-          <Button
-            key={outlook.id}
-            type={outlook.id === selectedOutlook.id ? "primary" : "text"}
-            id={outlook.id}
-            onClick={() => onOutlookSelect(outlook)}
-          >
-            {outlook.name}
-          </Button>
-        ))}
-      </div>
+      {stockInsights?.outlooks !== undefined &&
+        !isAllEmptyOutlooks(stockInsights?.outlooks) && (
+          <>
+            <h3>Outlooks</h3>
+            <div className={styles["buttons-row"]}>
+              {outlooks.map((outlook) => (
+                <Button
+                  key={outlook.id}
+                  type={outlook.id === selectedOutlook.id ? "primary" : "text"}
+                  id={outlook.id}
+                  onClick={() => onOutlookSelect(outlook)}
+                >
+                  {outlook.name}
+                </Button>
+              ))}
+            </div>
 
-      {activeOutlook !== undefined && Object.keys(activeOutlook).length > 0 && (
-        <section className={styles["outlook-details"]}>
-          <div className={styles["outlook-score"]}>
-            Score: {activeOutlook?.score}
-          </div>
-          <div className={styles["outlook-score-description"]}>
-            Score description: {activeOutlook?.scoreDescription}
-          </div>
-          <div className={styles["outlook-direction"]}>
-            Direction: {activeOutlook?.direction}
-          </div>
-        </section>
-      )}
+            {activeOutlook !== undefined &&
+              Object.keys(activeOutlook).length > 0 && (
+                <section className={styles["outlook-details"]}>
+                  <div className={styles["outlook-score"]}>
+                    Score: {activeOutlook?.score}
+                  </div>
+                  <div className={styles["outlook-score-description"]}>
+                    Score description: {activeOutlook?.scoreDescription}
+                  </div>
+                  <div className={styles["outlook-direction"]}>
+                    Direction: {activeOutlook?.direction}
+                  </div>
+                </section>
+              )}
+          </>
+        )}
     </section>
   )
 }
