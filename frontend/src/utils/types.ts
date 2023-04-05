@@ -68,6 +68,7 @@ export type ListedStock = {
 }
 
 export enum MarketState {
+  PREPRE = "PREPRE",
   PRE = "PRE",
   OPEN = "OPEN",
   REGULAR = "REGULAR",
