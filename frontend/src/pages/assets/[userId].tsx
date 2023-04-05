@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { getAssets } from "@/api/get-assets"
-import { Button, Divider, message, Spin } from "antd"
+import { Button, Divider, message } from "antd"
 import {
   AssetTableRecord,
   GetAssetsResponse,
@@ -22,6 +22,7 @@ import SellAssetModal from "@/components/modals/SellAssetModal"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import getMarketState from "@/api/get-market-state"
+import SpinningLoader from "@/components/SpinningLoader"
 
 const AssetsPage: React.FC = () => {
   const router = useRouter()
@@ -58,7 +59,7 @@ const AssetsPage: React.FC = () => {
   const { data: marketStateData, refetch: refetchMarketState } = useQuery(
     ["market-state", asset],
     () => {
-      if (asset == null || asset.symbol === undefined) return
+      if (asset?.symbol === undefined) return
       return getMarketState(asset.symbol)
     },
     {
@@ -102,33 +103,18 @@ const AssetsPage: React.FC = () => {
   }
 
   if (isLoading) {
-    return <Spin />
+    return <SpinningLoader />
   }
 
   function renderModal() {
     switch (modalId) {
       case "buy-new-stock":
       case "buy-first-stock":
-        return (
-          <BuyNewStockModal
-            refetch={refetch}
-            refetchMarketState={refetchMarketState}
-          />
-        )
+        return <BuyNewStockModal refetch={refetch} />
       case "buy-asset":
-        return (
-          <BuyAssetModal
-            refetchAssets={refetch}
-            refetchMarketState={refetchMarketState}
-          />
-        )
+        return <BuyAssetModal refetchAssets={refetch} />
       case "sell-asset":
-        return (
-          <SellAssetModal
-            refetchAssets={refetch}
-            //refetchMarketState={refetchMarketState}
-          />
-        )
+        return <SellAssetModal refetchAssets={refetch} />
       default:
         return null
     }
