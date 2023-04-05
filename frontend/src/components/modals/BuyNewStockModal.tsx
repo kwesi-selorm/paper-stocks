@@ -155,11 +155,11 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch, refetchMarketState }) => {
           }
           message.error("Error fetching the updated user information")
         })
-    } catch (e: any) {
+    } catch (e) {
       if (e instanceof AxiosError) {
         message.error(e?.response?.data.message)
       }
-      message.error(JSON.stringify(e.message))
+      console.error(e)
     }
     setOpen(false)
     setModalId("")
