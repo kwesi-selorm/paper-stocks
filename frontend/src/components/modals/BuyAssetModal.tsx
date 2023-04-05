@@ -34,6 +34,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
   const { userId } = router.query
   const id = userId as string
 
+  // LAST PRICE
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, [asset]],
     async () => {
@@ -50,6 +51,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
     }
   )
 
+  // USER
   const { refetch: refetchUser } = useQuery(
     ["user", id, token],
     () => {
@@ -59,8 +61,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
     {
       enabled: false,
       refetchOnWindowFocus: false,
-      retry: false,
-      retryOnMount: false
+      retry: false
     }
   )
 
@@ -103,7 +104,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       const returnedUser = refetchUser()
       if (!returnedUser) return
       refetchUser().then((data) => {
-        if (data.data) {
+        if (data.data !== undefined) {
           setUser(data.data)
         }
       })
