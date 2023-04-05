@@ -9,10 +9,15 @@ type Data = {
 
 export default async function sellAsset(
   data: Data,
-  userId: string | null,
-  token: string | null
-) {
-  if (!userId || !token) return
+  id: string | string[],
+  token: string
+): Promise<{ symbol: string; position: number } | undefined> {
+  let userId: string
+  if (typeof id === "object") {
+    userId = id[0]
+  } else {
+    userId = id
+  }
 
   const axiosConfig = {
     headers: {
@@ -21,5 +26,10 @@ export default async function sellAsset(
     }
   }
 
-  await axios.post(`${apiUrl}/assets/sell-asset/${userId}`, data, axiosConfig)
+  const response = await axios.post(
+    `${apiUrl}/assets/sell-asset/${userId}`,
+    data,
+    axiosConfig
+  )
+  return await response.data
 }
