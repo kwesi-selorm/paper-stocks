@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { useRouter } from "next/router"
-import { Form, InputNumber, message, Modal, Spin } from "antd"
+import { Form, InputNumber, message, Modal } from "antd"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import UserContext from "@/contexts/user-context/user-context"
 import AssetContext from "@/contexts/asset-context/asset-context"
@@ -11,7 +11,8 @@ import getUser from "@/api/get-user"
 import sellAsset from "@/api/sell-asset"
 import { formatToCurrencyString } from "@/utils/number-utils"
 import ReloadButton from "@/components/ReloadButton"
-import { checkMarketOpen } from "@/utils/stock-util"
+import { isMarketClosed } from "@/utils/stock-util"
+import SpinningLoader from "@/components/SpinningLoader"
 
 interface Props {
   refetchAssets: () => void
@@ -26,7 +27,6 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
   const router = useRouter()
   const { userId } = router.query
   const id = userId
-  const isMarketClosed = checkMarketOpen(marketState)
 
   const { refetch, isLoading, isError, error } = useQuery(
     ["lastPrice", user, token, asset],
@@ -89,7 +89,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
     setModalId("")
   }
 
-  if (isLoading) return <Spin />
+  if (isLoading) return <SpinningLoader />
   if (isError) {
     if (error instanceof AxiosError) {
       message.error(error?.response?.data?.message).then()
@@ -112,7 +112,7 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: isMarketClosed,
+        disabled: isMarketClosed(marketState),
         onClick: handleSubmit
       }}
       open={open}
@@ -135,10 +135,10 @@ const SellAssetModal = ({ refetchAssets }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {checkMarketOpen(marketState) ? (
-              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
-            ) : (
+            {marketState === "REGULAR" || marketState === "OPEN" ? (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
+            ) : (
+              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             )}
           </>
         </Form.Item>
