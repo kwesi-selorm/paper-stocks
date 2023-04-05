@@ -2,17 +2,17 @@ import React from "react"
 import { ComponentPreview, Previews } from "@react-buddy/ide-toolbox-next"
 import { PaletteTree } from "./palette"
 import InsightsCard from "@/components/InsightsCard"
-import SpinningLoader from "@/components/SpinningLoader";
+import SpinningLoader from "@/components/SpinningLoader"
 
 const ComponentPreviews = () => {
   return (
     <Previews palette={<PaletteTree />}>
       <ComponentPreview path="/InsightsCard">
-        <InsightsCard />
+        <InsightsCard lastPrice={75} symbol="AAPL" />
       </ComponentPreview>
-        <ComponentPreview path="/SpinningLoader">
-            <SpinningLoader/>
-        </ComponentPreview>
+      <ComponentPreview path="/SpinningLoader">
+        <SpinningLoader />
+      </ComponentPreview>
     </Previews>
   )
 }
