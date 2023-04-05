@@ -12,7 +12,7 @@ export default async function buyAsset(
   data: Data,
   id: string | string[],
   token: string
-) {
+): Promise<{ symbol: string; position: number } | undefined> {
   let userId: string
   if (typeof id === "object") {
     userId = id[0]
@@ -27,5 +27,10 @@ export default async function buyAsset(
     }
   }
 
-  await axios.post(`${apiUrl}/users/buy-asset/${userId}`, data, axiosConfig)
+  const response = await axios.post(
+    `${apiUrl}/users/buy-asset/${userId}`,
+    data,
+    axiosConfig
+  )
+  return await response.data
 }
