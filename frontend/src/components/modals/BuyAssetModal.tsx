@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ModalContext from "@/contexts/modal-context/modal-context"
-import { Form, InputNumber, message, Modal, Spin } from "antd"
+import { Form, InputNumber, message, Modal } from "antd"
 import React, { useContext, useEffect } from "react"
 import ReloadButton from "@/components/ReloadButton"
 import getStockPrice from "@/api/get-stock-price"
@@ -12,7 +12,9 @@ import { QueryObserverResult, useQuery } from "react-query"
 import buyAsset from "@/api/buy-asset"
 import { useRouter } from "next/router"
 import getUser from "@/api/get-user"
-import { checkMarketOpen } from "@/utils/stock-util"
+import { isMarketClosed } from "@/utils/stock-util"
+import SpinningLoader from "@/components/SpinningLoader"
+import getMarketState from "@/api/get-market-state"
 
 const initialFormValues = {
   position: 0
@@ -20,10 +22,9 @@ const initialFormValues = {
 
 interface Props {
   refetchAssets: () => Promise<QueryObserverResult<any>>
-  refetchMarketState: () => Promise<QueryObserverResult<any>>
 }
 
-const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
+const BuyAssetModal = ({ refetchAssets }: Props) => {
   const { setModalId, open, setOpen } = useContext(ModalContext)
   const { user, setUser, token } = useContext(UserContext)
   const { asset, lastPrice, setLastPrice, marketState, setMarketState } =
@@ -65,6 +66,20 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
     }
   )
 
+  //MARKET STATE
+  const { data: marketStateData, refetch: refetchMarketState } = useQuery(
+    ["market-state", asset?.symbol],
+    () => {
+      if (asset == null || asset?.symbol === undefined || asset.symbol === "")
+        return
+      return getMarketState(asset.symbol)
+    },
+    {
+      retry: 1,
+      refetchOnWindowFocus: false
+    }
+  )
+
   useEffect(() => {
     refetchMarketState().then((res) => {
       if (res.data === undefined) return
@@ -77,7 +92,13 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
     setAmountInvested(lastPrice * values.position)
   }, [lastPrice, values.position])
 
-  if (isLoading) return <Spin />
+  useEffect(() => {
+    if (marketStateData === undefined) return
+    setMarketState(marketStateData?.marketState)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketStateData])
+
+  if (isLoading) return <SpinningLoader />
   if (isError) {
     if (error instanceof AxiosError) {
       message.error(error?.response?.data?.message).then()
@@ -132,7 +153,7 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
       mask={true}
       maskClosable={true}
       okButtonProps={{
-        disabled: marketState !== "OPEN",
+        disabled: isMarketClosed(marketState),
         onClick: handleSubmit
       }}
       open={open}
@@ -164,10 +185,10 @@ const BuyAssetModal = ({ refetchAssets, refetchMarketState }: Props) => {
           <>
             {formatToCurrencyString(lastPrice)}{" "}
             <ReloadButton function={refetch} />{" "}
-            {checkMarketOpen(marketState) ? (
-              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
-            ) : (
+            {marketState === "REGULAR" || marketState === "OPEN" ? (
               <span style={{ color: "green" }}>NASDAQ-OPEN</span>
+            ) : (
+              <span style={{ color: "red" }}>NASDAQ-CLOSED</span>
             )}
           </>
         </Form.Item>
