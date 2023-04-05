@@ -22,7 +22,6 @@ import SellAssetModal from "@/components/modals/SellAssetModal"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import getMarketState from "@/api/get-market-state"
-import { symbol } from "prop-types"
 
 const AssetsPage: React.FC = () => {
   const router = useRouter()
@@ -72,6 +71,7 @@ const AssetsPage: React.FC = () => {
       return
     }
     setMarketState(marketStateData?.marketState)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketStateData])
 
   useEffect(() => {
