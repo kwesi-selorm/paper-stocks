@@ -56,7 +56,7 @@ const AssetsPage: React.FC = () => {
   }, [data])
 
   //MARKET STATE
-  const { data: marketStateData, refetch: refetchMarketState } = useQuery(
+  const { data: marketStateData } = useQuery(
     ["market-state", asset],
     () => {
       if (asset?.symbol === undefined) return
