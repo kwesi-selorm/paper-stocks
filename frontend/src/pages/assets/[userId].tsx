@@ -59,7 +59,7 @@ const AssetsPage: React.FC = () => {
     ["market-state", asset],
     () => {
       if (asset == null || asset.symbol === undefined) return
-      return getMarketState(asset?.symbol)
+      return getMarketState(asset.symbol)
     },
     {
       retry: 1

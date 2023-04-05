@@ -3,11 +3,8 @@ import { apiUrl } from "@/utils/constants"
 import { GetMarketStateResponse } from "@/utils/types"
 
 export default async function getMarketState(
-  symbol: string | undefined
+  symbol: string
 ): Promise<GetMarketStateResponse | undefined> {
-  if (symbol === undefined) {
-    return
-  }
   const data = { symbol }
   const axiosConfig: AxiosRequestConfig = {
     headers: {
