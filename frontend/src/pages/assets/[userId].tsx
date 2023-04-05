@@ -22,6 +22,7 @@ import SellAssetModal from "@/components/modals/SellAssetModal"
 import ModalContext from "@/contexts/modal-context/modal-context"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import getMarketState from "@/api/get-market-state"
+import { symbol } from "prop-types"
 
 const AssetsPage: React.FC = () => {
   const router = useRouter()
@@ -57,7 +58,10 @@ const AssetsPage: React.FC = () => {
   //MARKET STATE
   const { data: marketStateData, refetch: refetchMarketState } = useQuery(
     ["market-state", asset],
-    async () => await getMarketState(asset?.symbol),
+    () => {
+      if (asset == null || asset.symbol === undefined) return
+      return getMarketState(asset?.symbol)
+    },
     {
       retry: 1
     }
@@ -67,13 +71,14 @@ const AssetsPage: React.FC = () => {
     if (marketStateData === undefined) {
       return
     }
-    setMarketState(marketStateData.marketState)
+    setMarketState(marketStateData?.marketState)
   }, [marketStateData])
 
   useEffect(() => {
     const item = window.localStorage.getItem("user")
     if (item == null) return
-    const storedUser: LoggedInUser = JSON.parse(item)
+    const storedUser: LoggedInUser | undefined = JSON.parse(item)
+    if (storedUser === undefined) return
     setUser(storedUser)
     setToken(storedUser.token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
