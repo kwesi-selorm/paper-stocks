@@ -1,14 +1,12 @@
 import { Outlook } from "@/components/InsightsCard"
 
-export function checkMarketOpen(marketState: string): boolean {
-  if (
+export function isMarketClosed(marketState: string): boolean {
+  return (
     marketState === "PREPRE" ||
     marketState === "PRE" ||
     marketState === "CLOSED" ||
     marketState === "POST"
-  ) {
-    return false
-  } else return marketState === "OPEN" || marketState === "REGULAR"
+  )
 }
 
 function isEmpty(object: Outlook | undefined) {
