@@ -28,7 +28,7 @@ export default async function buyAsset(
   }
 
   const response = await axios.post(
-    `${apiUrl}/users/buy-asset/${userId}`,
+    `${apiUrl}/assets/buy-asset/${userId}`,
     data,
     axiosConfig
   )
