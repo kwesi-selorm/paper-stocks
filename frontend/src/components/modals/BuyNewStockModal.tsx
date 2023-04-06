@@ -96,10 +96,10 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
   )
 
   //MARKET STATE
-  const { data: marketStateData, refetch: refetchMarketState } = useQuery(
+  const { data: marketStateData } = useQuery(
     ["market-state", values.symbol],
     () => {
-      if (values?.symbol === undefined || values.symbol === "") return
+      if (values?.symbol === undefined) return
       return getMarketState(values.symbol)
     },
     {
@@ -122,11 +122,6 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
 
   useEffect(() => {
     if (values.symbol === "" || values.symbol == null) return
-
-    refetchMarketState().then((res) => {
-      if (res?.data === undefined) return
-      setMarketState(res?.data?.marketState)
-    })
 
     refetchStockPrice().then((res) => {
       if (res?.data === undefined) return
