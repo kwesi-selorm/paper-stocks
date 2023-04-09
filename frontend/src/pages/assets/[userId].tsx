@@ -144,6 +144,7 @@ const AssetsPage: React.FC = () => {
       {Boolean(assets) && assets?.length == 0 && <BuyFirstAsset />}
 
       <Button
+        danger={true}
         htmlType={"button"}
         onClick={handleSignOut}
         size={"large"}
