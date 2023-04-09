@@ -200,6 +200,9 @@ const BuyNewStockModal: React.FC<Props> = ({ refetch }) => {
 
   return (
     <Modal
+      cancelButtonProps={{
+        danger: true
+      }}
       centered={true}
       keyboard={true}
       mask={true}

@@ -143,6 +143,7 @@ const BuyAssetModal = ({ refetchAssets }: Props) => {
   return (
     <Modal
       cancelButtonProps={{
+        danger: true,
         onClick: () => {
           setOpen(false)
           setModalId("")
