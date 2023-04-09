@@ -19,11 +19,10 @@ const BuyFirstAsset: React.FC = () => {
       </p>
       <br />
       <Button
-        block
         htmlType="button"
         onClick={handleBuyFirstAsset}
-        style={{ width: "50%" }}
-        type={"primary"}
+        size="large"
+        type="primary"
       >
         Buy
       </Button>
