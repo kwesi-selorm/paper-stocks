@@ -5,7 +5,7 @@ import ModalContext from "@/contexts/modal-context/modal-context"
 import UserContext from "@/contexts/user-context/user-context"
 import AssetContext from "@/contexts/asset-context/asset-context"
 import { AxiosError } from "axios"
-import { useQuery } from "react-query"
+import { QueryObserverResult, useQuery } from "react-query"
 import getStockPrice from "@/api/get-stock-price"
 import getUser from "@/api/get-user"
 import sellAsset from "@/api/sell-asset"
@@ -13,9 +13,12 @@ import { formatToCurrencyString } from "@/utils/number-utils"
 import ReloadButton from "@/components/ReloadButton"
 import { isMarketClosed } from "@/utils/stock-util"
 import SpinningLoader from "@/components/SpinningLoader"
+import { GetAssetsResponse } from "@/utils/types"
 
 interface Props {
-  refetchAssets: () => void
+  refetchAssets: () => Promise<
+    QueryObserverResult<GetAssetsResponse[] | undefined>
+  >
 }
 
 const SellAssetModal = ({ refetchAssets }: Props) => {

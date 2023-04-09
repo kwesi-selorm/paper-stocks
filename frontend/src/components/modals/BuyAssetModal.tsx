@@ -15,13 +15,16 @@ import getUser from "@/api/get-user"
 import { isMarketClosed } from "@/utils/stock-util"
 import SpinningLoader from "@/components/SpinningLoader"
 import getMarketState from "@/api/get-market-state"
+import { GetAssetsResponse } from "@/utils/types"
 
 const initialFormValues = {
   position: 0
 }
 
 interface Props {
-  refetchAssets: () => Promise<QueryObserverResult<any>>
+  refetchAssets: () => Promise<
+    QueryObserverResult<GetAssetsResponse[] | undefined>
+  >
 }
 
 const BuyAssetModal = ({ refetchAssets }: Props) => {
