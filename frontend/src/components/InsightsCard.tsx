@@ -112,13 +112,12 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
         {sector !== undefined ? ` (${stockInsights?.sector})` : null}
       </div>
 
-      {recommendation !== undefined &&
-        Object.keys(recommendation).length > 0 && (
-          <>
-            <br />
-            <h3>Recommendations</h3>
-          </>
-        )}
+      {recommendation !== undefined && Object.keys(recommendation).length > 0 && (
+        <>
+          <br />
+          <h3>Recommendations</h3>
+        </>
+      )}
       {recommendation?.targetPrice !== undefined && (
         <>
           <p>
@@ -154,7 +153,6 @@ const InsightsCard = ({ symbol, lastPrice }: Props): JSX.Element | null => {
           <b>Bearish summary</b>: {summaries?.bearishSummary}
         </p>
       )}
-      <br />
 
       {stockInsights?.outlooks !== undefined &&
         !isAllEmptyOutlooks(stockInsights?.outlooks) && (
