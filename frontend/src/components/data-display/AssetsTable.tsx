@@ -17,7 +17,7 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
   const { setModalId, setOpen } = useContext(ModalContext)
   const { setAsset } = useContext(AssetContext)
 
-  const tableTitle = useCallback(() => {
+  const TableTitle = useCallback(() => {
     return (
       <div>
         <h2>Portfolio</h2>
@@ -92,7 +92,6 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
           <Button
             htmlType="button"
             onClick={() => handleOnBuyAsset(record)}
-            shape="round"
             size="small"
             type="primary"
           >
@@ -102,7 +101,6 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
             danger
             htmlType="button"
             onClick={() => handleOnSellAsset(record)}
-            shape="round"
             size="small"
             type="primary"
           >
@@ -135,13 +133,16 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
       <Button htmlType="button" onClick={handleOnBuyNewStock} size="large">
         Buy new stock
       </Button>
+      <br />
+      <br />
+      <TableTitle />
+      <br />
       <Table
         columns={columns}
         dataSource={tableData}
         pagination={false}
         rowKey={(record) => record._id}
         tableLayout="auto"
-        title={tableTitle}
       />
     </section>
   )
