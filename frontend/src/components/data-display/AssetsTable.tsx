@@ -88,10 +88,12 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
       title: "Action",
       key: "action",
       render: (text, record) => (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "10%" }}>
           <Button
             htmlType="button"
             onClick={() => handleOnBuyAsset(record)}
+            shape="round"
+            size="small"
             type="primary"
           >
             Buy
@@ -100,6 +102,8 @@ const AssetsTable = ({ assets, refetch, tableData }: Props) => {
             danger
             htmlType="button"
             onClick={() => handleOnSellAsset(record)}
+            shape="round"
+            size="small"
             type="primary"
           >
             Sell
